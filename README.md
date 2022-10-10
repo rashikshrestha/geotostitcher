@@ -1,0 +1,2 @@
+# geotostitcher
+Make panaroma stitching
