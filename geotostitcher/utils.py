@@ -1,5 +1,24 @@
 import os
 from pathlib import Path
+from re import I
+
+def get_project_name_from_input_dir(input_dir):
+    """
+    Extract Project name from input dir path
+
+    Parameters
+    ----------
+    input_dir: str
+        Path to input directory
+    
+    Returns
+    -------
+    project_name: str
+        Name of the project
+    """
+    splits = input_dir.split('/')
+    return splits[-1]
+
 
 def get_recordings(input_dir):
     """
@@ -18,6 +37,7 @@ def get_recordings(input_dir):
     images_dir = input_dir + '/images'
     recordings = os.listdir(images_dir)
     return recordings
+
 
 def get_cameras(input_dir, rec):
     """
@@ -40,6 +60,7 @@ def get_cameras(input_dir, rec):
     cams.sort()
     # cams = os.listdir(f"{input_dir}/images/{rec}")
     return cams
+
 
 def get_recordings_and_cameras(input_dir):
     """
@@ -65,6 +86,7 @@ def get_recordings_and_cameras(input_dir):
         cameras = get_cameras(input_dir, rec)
         r_and_c[rec] = cameras
     return r_and_c
+
 
 def build_output_dirs(rec_and_cams, output_dir):
     """
@@ -97,6 +119,7 @@ def build_output_dirs(rec_and_cams, output_dir):
     #! Build intermediate dir
     intermediate_dir = Path(output_dir+'/intermediate')
     intermediate_dir.mkdir(parents=True, exist_ok=True)
+
 
 def verify_output_dirs(rec_and_cams, output_dir):
     """
@@ -142,6 +165,62 @@ def verify_output_dirs(rec_and_cams, output_dir):
     success = check_dir(intermediate_dir) and success
 
     return success
+
+
+def get_image_seq_from_poses_file(poses_file_path):
+    """
+    Get the image sequence from poses file
+
+    Parameters
+    ----------
+    poses_file_path: str
+        Poses file path
+
+    Returns
+    -------
+    seq_list: list
+        Sequence of images available in the poses file
+    
+    """
+    with open(poses_file_path, 'r') as f:
+        seq_list = [line.split(None, 1)[0] for line in f]
+        seq_list = seq_list[4:]
+    return seq_list
+
+
+def get_poses_file_path_for_this_rec(input_dir, rec):
+    """
+    Get the path to poses file for this recording
+
+    Parameters
+    ----------
+    input_dir: str
+        Path to input directory
+    rec: str
+        Name of recording
+
+    Returns
+    -------
+    poses_file_path: str
+        Path of the poses file
+    """
+    project_name = get_project_name_from_input_dir(input_dir)
+    poses_dirs = os.listdir(f"{input_dir}/poses") 
+
+    for pd in poses_dirs:
+        if pd.startswith(f"{project_name}__poses__{rec}"):
+            break
+
+    splits = pd.split('__')
+    poses_file_name = f"{splits[0]}_{splits[-1]}.poses"
+    poses_file_path = f"{input_dir}/poses/{pd}/{poses_file_name}"
+
+    if Path(poses_file_path).exists():
+        return poses_file_path
+    else:
+        print(f"Poses file unavailable for recording {rec}")
+        return None
+
 
 def generate_filtered_images_list(rec, output_dir):
     """
