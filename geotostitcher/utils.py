@@ -224,7 +224,7 @@ def get_image_seq_from_poses_file(poses_file_path):
 def generate_filtered_images_list(input_dir, output_dir, rec, cams):
     """
     Generate filtered images list for each recording and store the list in a text file.
-    The text file is saved under output_dir/intermediate/{rec_name}_filtered.txt
+    The text file is saved under output_dir/intermediate/filtered_{rec_name}.txt
 
     Parameters
     ----------
@@ -242,7 +242,7 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
     None
 
     """
-    output_filename = f"{output_dir}/intermediate/{rec}_filtered.txt"
+    output_filename = f"{output_dir}/intermediate/filtered_{rec}.txt"
     f = open(output_filename, "w")
 
     poses_file = get_poses_file_path_for_this_rec(input_dir, rec)
@@ -261,7 +261,7 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
         seq.sort()
         seq_in_dirs[c] = seq
 
-    filetred_poses = []
+    # filetred_poses = []
     #! For each sequence number we get from poses file
     for pose_seq in img_seq_from_poses:
         available = 1
@@ -272,7 +272,7 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
                 available = 0
                 break
         if available:
-            filetred_poses.append(pose_seq)
+            # filetred_poses.append(pose_seq)
             f.write(pose_seq)
             f.write('\n')
 
@@ -296,10 +296,10 @@ def generate_filtered_images_list_forall(input_dir, output_dir, r_and_c):
         generate_filtered_images_list(input_dir, output_dir, r, c)
 
 
-def generate_pgftojpg_commands(path_to_converter, output_dir, input_dir):
+def generate_pgftojpg_commands_all(path_to_converter, input_dir, output_dir):
     """
     Generate pgftojpg commands for each recordings and store them in a text file.
-    The text file is saved under output_dir/intermediate/{rec_name}_convert_commands.txt
+    The text file is saved under output_dir/intermediate/pgf2jpg_{rec}.txt
 
     Parameters
     ----------
@@ -308,4 +308,5 @@ def generate_pgftojpg_commands(path_to_converter, output_dir, input_dir):
     -------
 
     """
+    
     pass
