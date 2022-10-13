@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 def get_recordings(input_dir):
     """
@@ -67,7 +68,7 @@ def get_recordings_and_cameras(input_dir):
 
 def build_output_dirs(rec_and_cams, output_dir):
     """
-    Build the output directory structure
+    Build the output directory structure (If doesn't exists)
     
     Parameters
     ----------
@@ -80,7 +81,22 @@ def build_output_dirs(rec_and_cams, output_dir):
     -------
     None 
     """
-    pass
+    #! For each recording:
+    for r,cams in rec_and_cams.items():
+        #! Build dir for each camera
+        for c in cams:
+            cam_dir = Path(output_dir+'/images/'+r+'/'+c)
+            cam_dir.mkdir(parents=True, exist_ok=True)
+
+        #! Build dirs for 360 and 360low
+        dir360 = Path(output_dir+'/images/'+r+'/360')
+        dir360low = Path(output_dir+'/images/'+r+'/360low')
+        dir360.mkdir(parents=True, exist_ok=True)
+        dir360low.mkdir(parents=True, exist_ok=True)
+
+    #! Build intermediate dir
+    intermediate_dir = Path(output_dir+'/intermediate')
+    intermediate_dir.mkdir(parents=True, exist_ok=True)
 
 def verify_output_dirs(rec_and_cams, output_dir):
     """
@@ -98,7 +114,34 @@ def verify_output_dirs(rec_and_cams, output_dir):
     success: bool
         Returns 1 if output dir okay, else 0
     """
-    pass
+    success = 1
+
+    #! Function to check if dir exists
+    def check_dir(path):
+        if not path.exists():
+            print(path, "doesn't exists")
+            return 0
+        else:
+            return 1
+
+    #! For each recording:
+    for r,cams in rec_and_cams.items():
+        #! Check dir for each camera
+        for c in cams:
+            cam_dir = Path(output_dir+'/images/'+r+'/'+c)
+            success = check_dir(cam_dir) and success
+
+        #! Check dirs for 360 and 360low
+        dir360 = Path(output_dir+'/images/'+r+'/360')
+        success = check_dir(dir360) and success
+        dir360low = Path(output_dir+'/images/'+r+'/360low')
+        success = check_dir(dir360low) and success
+
+    #! Check intermediate dir
+    intermediate_dir = Path(output_dir+'/intermediate')
+    success = check_dir(intermediate_dir) and success
+
+    return success
 
 def generate_filtered_images_list(rec, output_dir):
     """
