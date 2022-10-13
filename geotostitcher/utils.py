@@ -167,27 +167,6 @@ def verify_output_dirs(rec_and_cams, output_dir):
     return success
 
 
-def get_image_seq_from_poses_file(poses_file_path):
-    """
-    Get the image sequence from poses file
-
-    Parameters
-    ----------
-    poses_file_path: str
-        Poses file path
-
-    Returns
-    -------
-    seq_list: list
-        Sequence of images available in the poses file
-    
-    """
-    with open(poses_file_path, 'r') as f:
-        seq_list = [line.split(None, 1)[0] for line in f]
-        seq_list = seq_list[4:]
-    return seq_list
-
-
 def get_poses_file_path_for_this_rec(input_dir, rec):
     """
     Get the path to poses file for this recording
@@ -222,6 +201,27 @@ def get_poses_file_path_for_this_rec(input_dir, rec):
         return None
 
 
+def get_image_seq_from_poses_file(poses_file_path):
+    """
+    Get the image sequence from poses file
+
+    Parameters
+    ----------
+    poses_file_path: str
+        Poses file path
+
+    Returns
+    -------
+    seq_list: list
+        Sequence of images available in the poses file
+    
+    """
+    with open(poses_file_path, 'r') as f:
+        seq_list = [line.split(None, 1)[0] for line in f]
+        seq_list = seq_list[4:]
+    return seq_list
+
+
 def generate_filtered_images_list(rec, output_dir):
     """
     Generate filtered images list for each recording and store the list in a text file.
@@ -239,6 +239,7 @@ def generate_filtered_images_list(rec, output_dir):
 
     """
     pass
+
 
 def generate_pgftojpg_commands(path_to_converter, output_dir, input_dir):
     """
