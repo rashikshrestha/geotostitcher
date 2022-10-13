@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from re import I
 
 def get_project_name_from_input_dir(input_dir):
     """
@@ -222,23 +221,79 @@ def get_image_seq_from_poses_file(poses_file_path):
     return seq_list
 
 
-def generate_filtered_images_list(rec, output_dir):
+def generate_filtered_images_list(input_dir, output_dir, rec, cams):
     """
     Generate filtered images list for each recording and store the list in a text file.
     The text file is saved under output_dir/intermediate/{rec_name}_filtered.txt
 
     Parameters
     ----------
-    rec: 
-
+    input_dir: str
+        Path to input directory
     output_dir: str
         Path to output dirctory
+    rec: str
+        Name of the recording 
+    cams: list
+        List of cameras of this rec
 
     Returns
     -------
+    None
 
     """
-    pass
+    output_filename = f"{output_dir}/intermediate/{rec}_filtered.txt"
+    f = open(output_filename, "w")
+
+    poses_file = get_poses_file_path_for_this_rec(input_dir, rec)
+    img_seq_from_poses = get_image_seq_from_poses_file(poses_file)
+
+    seq_in_dirs = {}
+    for c in cams:
+        dir_to_check = f"{input_dir}/images/{rec}/{c}"
+        images = os.listdir(dir_to_check)
+        seq = []
+
+        #! Extract only sequence number from the image name
+        for i in images:
+            seq.append(i.split('.')[1])
+
+        seq.sort()
+        seq_in_dirs[c] = seq
+
+    filetred_poses = []
+    #! For each sequence number we get from poses file
+    for pose_seq in img_seq_from_poses:
+        available = 1
+        #! Check this seq inside each camera
+        for c in cams:
+            if pose_seq not in seq_in_dirs[c]:
+                # print(f"{pose_seq} not available in cam {c}")
+                available = 0
+                break
+        if available:
+            filetred_poses.append(pose_seq)
+            f.write(pose_seq)
+            f.write('\n')
+
+    f.close()
+
+
+def generate_filtered_images_list_forall(input_dir, output_dir, r_and_c):
+    """
+    Generate filtered image list for all
+    
+    Parameters
+    ----------
+    r_and_c: dict
+        Dictionary where key=rec_name and value=list of cameras for that recording
+        eg: {
+            '101': ['00', '01', '02', '03', '04', '05'],
+            '102': ['00', '01', '02', '03', '04']
+        } 
+    """
+    for r,c in r_and_c.items():
+        generate_filtered_images_list(input_dir, output_dir, r, c)
 
 
 def generate_pgftojpg_commands(path_to_converter, output_dir, input_dir):
