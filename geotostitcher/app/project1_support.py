@@ -78,6 +78,53 @@ def start_process_pgf():
     print("Finish PGF")
 
 
+def start_process_jpg():
+    global stitcher, _w1, root
+    threads = int(_w1.jpg_threads.get())
+
+    recordings = stitcher.recs
+
+    for rec in recordings:
+        _w1.process_jpg_rec['text'] = rec
+        stitcher.process_jpg(rec, threads)
+        total = stitcher.exe.total_commands
+    
+        done = False
+        while not done:
+            percent, count, done = stitcher.exe.get_progress()
+            _w1.process_jpg['value'] = percent
+            _w1.process_jpg_status['text'] = f"{count}/{total}"
+            root.update_idletasks()
+            root.update()
+            time.sleep(0.05)
+    
+    print("Finish JPG")
+
+def start_stitch_360():
+    global stitcher, _w1, root
+    threads = int(_w1.stitch_360_threads.get())
+
+    recordings = stitcher.recs
+
+    for rec in recordings:
+        _w1.stitch_360_rec['text'] = rec
+        stitcher.stitch_360(rec, threads)
+        total = stitcher.exe.total_commands
+    
+        done = False
+        while not done:
+            percent, count, done = stitcher.exe.get_progress()
+            _w1.stitch_360['value'] = percent
+            _w1.stitch_360_status['text'] = f"{count}/{total}"
+            root.update_idletasks()
+            root.update()
+            time.sleep(0.05)
+    
+    print("Finish Stitch 360")
+
+
+
+
 
 
 

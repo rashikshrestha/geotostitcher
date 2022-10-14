@@ -34,6 +34,10 @@ class Stitcher():
         #! Generate Move JPG commands
         utils.generate_movejpg_commands_all(self.input_dir, self.output_dir, self.r_and_c)
 
+        #! Generate Stitch 360 commands
+        stitcher = '/home/rashik/workspace/geoautomation/geotostitcher/geotostitcher/simple_stitcher.py'
+        utils.generate_stitch_commands_all(stitcher, self.output_dir, self.recs, self.config_file)
+
     def process_pgf(self, rec, no_of_threads):
         """
         
@@ -46,3 +50,26 @@ class Stitcher():
         self.exe.prepare_execution(execution_file, no_of_threads)
         self.exe.start()
 
+    def process_jpg(self, rec, no_of_threads):
+        """
+        
+        Parameters
+        ----------
+        no_of_threads: int
+            No of Threads to run
+        """
+        execution_file = utils.get_commands_file(self.output_dir, 'movejpgs', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
+
+    def stitch_360(self, rec, no_of_threads):
+        """
+        
+        Parameters
+        ----------
+        no_of_threads: int
+            No of Threads to run
+        """
+        execution_file = utils.get_commands_file(self.output_dir, 'stitch', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
