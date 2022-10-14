@@ -1,8 +1,5 @@
-from concurrent.futures import thread
 import os
-from re import sub
 from threading import Thread
-import math
 import time
 
 # Input parameters
