@@ -296,7 +296,27 @@ def generate_filtered_images_list_forall(input_dir, output_dir, r_and_c):
         generate_filtered_images_list(input_dir, output_dir, r, c)
 
 
-def generate_pgftojpg_commands_all(path_to_converter, input_dir, output_dir):
+def get_list_from_filtered_images_file(file_path):
+    """
+    Get list of image sequence from filtered images file
+
+    Parameters
+    ----------
+    file_path: str
+        Path to filtered images file
+    
+    Returns
+    -------
+    seq: list
+        List of sequence numbers from file
+    """
+    with open(file_path, 'r') as f:
+        seq_list = [line[:-1] for line in f]
+    
+    return seq_list
+
+
+def generate_pgftojpg_commands_all(input_dir, output_dir, r_and_c, path_to_converter):
     """
     Generate pgftojpg commands for each recordings and store them in a text file.
     The text file is saved under output_dir/intermediate/pgf2jpg_{rec}.txt
@@ -308,5 +328,32 @@ def generate_pgftojpg_commands_all(path_to_converter, input_dir, output_dir):
     -------
 
     """
-    
-    pass
+    #! For each recording:
+    for r,c in r_and_c.items():
+
+        #! Get the seq from filtred_{rec}.txt file
+        filtered_filepath = f"{output_dir}/intermediate/filtered_{r}.txt"
+        if not Path(filtered_filepath).exists():
+            print(filtered_filepath, "doesn't exists") 
+            continue
+        else:
+            seq = get_list_from_filtered_images_file(filtered_filepath)
+
+        #TODO Scan and prepare the list of cameras which has PGF images
+        cam_pgf = ['00', '01', '02', '03', '04', '05', '06', '07']
+
+        #! Open file to store the commands
+        output_filepath = f"{output_dir}/intermediate/pgf2jpg_{r}.txt"
+        f = open(output_filepath, "w")
+
+        #! For each camera with pgf images:
+        for c_pgf in cam_pgf:
+            for s in seq:
+                cmd = f"{path_to_converter} {input_dir}/images/{r}/{c_pgf}/image.{s}.pgf {output_dir}/images/{r}/{c_pgf}/image/{s}.jpg"
+                f.write(cmd)
+                f.write('\n')
+
+        #! Close the file
+        f.close()
+
+
