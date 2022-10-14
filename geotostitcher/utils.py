@@ -316,7 +316,7 @@ def get_list_from_filtered_images_file(file_path):
     return seq_list
 
 
-def generate_pgftojpg_commands_all(input_dir, output_dir, r_and_c, path_to_converter):
+def generate_pgftojpg_commands(input_dir, output_dir, r, c, path_to_converter):
     """
     Generate pgftojpg commands for each recordings and store them in a text file.
     The text file is saved under output_dir/intermediate/pgf2jpg_{rec}.txt
@@ -326,34 +326,79 @@ def generate_pgftojpg_commands_all(input_dir, output_dir, r_and_c, path_to_conve
 
     Returns
     -------
-
+    success: bool
+        1 if succeed else 0
     """
-    #! For each recording:
+    #! Get the seq from filtred_{rec}.txt file
+    filtered_filepath = f"{output_dir}/intermediate/filtered_{r}.txt"
+    if not Path(filtered_filepath).exists():
+        print(filtered_filepath, "doesn't exists") 
+        return 0
+    else:
+        seq = get_list_from_filtered_images_file(filtered_filepath)
+
+    #TODO Scan and prepare the list of cameras which has PGF images
+    cam_pgf = ['00', '01', '02', '03', '04', '05', '06', '07']
+
+    #! Open file to store the commands
+    output_filepath = f"{output_dir}/intermediate/pgf2jpg_{r}.txt"
+    f = open(output_filepath, "w")
+
+    #! For each camera with pgf images:
+    for c_pgf in cam_pgf:
+        for s in seq:
+            cmd = f"{path_to_converter} {input_dir}/images/{r}/{c_pgf}/image.{s}.pgf {output_dir}/images/{r}/{c_pgf}/image.{s}.jpg"
+            f.write(cmd)
+            f.write('\n')
+
+    #! Close the file
+    f.close()
+
+    return 1
+
+
+def generate_pgftojpg_commands_all(input_dir, output_dir, r_and_c, path_to_converter):
+    """
+    Generate pgf2jpg commands for all recordings
+    """
     for r,c in r_and_c.items():
-
-        #! Get the seq from filtred_{rec}.txt file
-        filtered_filepath = f"{output_dir}/intermediate/filtered_{r}.txt"
-        if not Path(filtered_filepath).exists():
-            print(filtered_filepath, "doesn't exists") 
-            continue
-        else:
-            seq = get_list_from_filtered_images_file(filtered_filepath)
-
-        #TODO Scan and prepare the list of cameras which has PGF images
-        cam_pgf = ['00', '01', '02', '03', '04', '05', '06', '07']
-
-        #! Open file to store the commands
-        output_filepath = f"{output_dir}/intermediate/pgf2jpg_{r}.txt"
-        f = open(output_filepath, "w")
-
-        #! For each camera with pgf images:
-        for c_pgf in cam_pgf:
-            for s in seq:
-                cmd = f"{path_to_converter} {input_dir}/images/{r}/{c_pgf}/image.{s}.pgf {output_dir}/images/{r}/{c_pgf}/image/{s}.jpg"
-                f.write(cmd)
-                f.write('\n')
-
-        #! Close the file
-        f.close()
+        generate_pgftojpg_commands(input_dir, output_dir, r, c, path_to_converter)
 
 
+def generate_movejpg_commands(input_dir, output_dir, r, c):
+    """
+    Generate movejpg Commands for a particular recording
+    """
+    #! Get the seq from filtred_{rec}.txt file
+    filtered_filepath = f"{output_dir}/intermediate/filtered_{r}.txt"
+    if not Path(filtered_filepath).exists():
+        print(filtered_filepath, "doesn't exists") 
+        return 0
+    else:
+        seq = get_list_from_filtered_images_file(filtered_filepath)
+
+    #TODO Scan and prepare the list of cameras which has JPG images
+    cam_jpg = ['08', '09', '10', '11', '12', '13']
+
+    #! Open file to store the commands
+    output_filepath = f"{output_dir}/intermediate/movejpgs_{r}.txt"
+    f = open(output_filepath, "w")
+
+    #! For each camera with pgf images:
+    for c_jpg in cam_jpg:
+        for s in seq:
+            cmd = f"cp {input_dir}/images/{r}/{c_jpg}/image.{s}.jpg {output_dir}/images/{r}/{c_jpg}/image.{s}.jpg"
+            f.write(cmd)
+            f.write('\n')
+
+    #! Close the file
+    f.close()
+
+    return 1
+
+def generate_movejpg_commands_all(input_dir, output_dir, r_and_c):
+    """
+    Generate movejpg commands for all recordings
+    """
+    for r,c in r_and_c.items():
+        generate_movejpg_commands(input_dir, output_dir, r, c)
