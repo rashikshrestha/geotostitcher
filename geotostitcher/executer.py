@@ -24,18 +24,26 @@ class Executer():
     """
     Execute the commands in parllel
 
-    Attributes
-    ----------
-    filepath: str
-        Path to files with commands to run
-    no_of_threads: int
-        Number of parallel processes to run
     
     """
-    def __init__(self, filepath, no_of_threads) -> None:
+    def __init__(self) -> None:
+        pass
 
+    def prepare_execution(self, filepath, no_of_threads):
+        """
+        Prepare for execution
+
+        Paremeters
+        ----------
+        filepath: str
+            Path to files with commands to run
+        no_of_threads: int
+            Number of parallel processes to run
+
+        """
         #! Get commands and group it
         commands = self.get_commands(filepath)
+        self.total_commands = len(commands)
         commands_groups = self.get_sublists(commands, no_of_threads)
         self.total_threads = len(commands_groups)
 
@@ -43,6 +51,7 @@ class Executer():
         self.thread_list = []
         for i in range(self.total_threads):
             self.thread_list.append(ConversionThread(commands_groups[i]))
+
 
 
     def start(self):
@@ -67,7 +76,9 @@ class Executer():
             else:
                 done = done and self.thread_list[i].done
 
-        return total_count, done 
+        percent = int((total_count/self.total_commands)*100)
+
+        return percent, total_count, done 
 
 
     def get_commands(self, file_path):
