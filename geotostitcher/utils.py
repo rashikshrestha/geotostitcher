@@ -396,9 +396,58 @@ def generate_movejpg_commands(input_dir, output_dir, r, c):
 
     return 1
 
+
 def generate_movejpg_commands_all(input_dir, output_dir, r_and_c):
     """
     Generate movejpg commands for all recordings
     """
     for r,c in r_and_c.items():
         generate_movejpg_commands(input_dir, output_dir, r, c)
+
+
+def generate_stitch_commands(stitcher, output_dir, r, cfg_file):
+    """
+    Generate stitch commands for a recording
+    
+    """
+    #! Get the seq from filtred_{rec}.txt file
+    filtered_filepath = f"{output_dir}/intermediate/filtered_{r}.txt"
+    if not Path(filtered_filepath).exists():
+        print(filtered_filepath, "doesn't exists") 
+        return 0
+    else:
+        seq = get_list_from_filtered_images_file(filtered_filepath)
+
+    #! Open file to store the commands
+    output_filepath = f"{output_dir}/intermediate/stitch_{r}.txt"
+    f = open(output_filepath, "w")
+
+    for s in seq:
+        command = f"python3 {stitcher} {output_dir} {r} {s} {cfg_file}"
+        f.write(command)
+        f.write('\n')
+
+    f.close()
+
+    return 1
+
+
+def generate_stitch_commands_all(stitcher, output_dir, recs, cfg_file):
+    """
+    Generate stitch commands for all recordings
+    """
+    for r in recs:
+        generate_stitch_commands(stitcher, output_dir, r, cfg_file)
+
+
+def get_commands_file(output_dir, command, rec):
+    """
+    Get particular command file path of given rec
+    """
+    file = f"{output_dir}/intermediate/{command}_{rec}.txt"
+    return file
+
+
+
+
+
