@@ -28,3 +28,12 @@ print(f"Output dirs status = {out_dir_ok}")
 
 #! Generate Filtered images list
 utils.generate_filtered_images_list_forall(ind, oud, r_and_c)
+
+utils.generate_pgftojpg_commands_all(ind, oud, r_and_c,
+'/home/rashik/workspace/geoautomation/geotostitcher/bin/pgf2jpg.dms')
+
+utils.generate_movejpg_commands_all(ind, oud, r_and_c)
+
+stitcher = '/home/rashik/workspace/geoautomation/geotostitcher/geotostitcher/simple_stitcher.py'
+cfg_file = '/home/rashik/workspace/geoautomation/geotostitcher/scripts/stitch_config.yaml'
+utils.generate_stitch_commands_all(stitcher, oud, recs, cfg_file)

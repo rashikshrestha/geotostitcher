@@ -93,11 +93,7 @@ def stitch(ip_paths, op_path, cfg):
         # print(img.shape)
 
         # Rotate and y-shift both image and mask
-        img_final, mask_final = rotate_and_shift(img,
-                                                   mask,
-                                                   -angle[i],
-                                                   rot_axis,
-                                                   -y_shift[i])
+        img_final, mask_final = rotate_and_shift(img, mask, -angle[i], rot_axis, -y_shift[i])
 
         # Add image to panaroma
         start = x_start[i]
@@ -149,4 +145,5 @@ if __name__=='__main__':
     cfg = read_cfg(cfg_file)
     ip_paths, op_path = get_io_images_path(output_dir, rec, seq, cfg['cam_seq'])
     done = stitch(ip_paths, op_path, cfg)
+    print(done)
 

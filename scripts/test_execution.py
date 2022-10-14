@@ -2,16 +2,18 @@ from geotostitcher.executer import Executer
 import time
 from datetime import datetime
 
-cmd_file = '/home/rashik/workspace/geoautomation/mrcsource-pave-out/intermediate/movejpgs_101.txt'
+cmd_file = '/home/rashik/workspace/geoautomation/mrcsource-pave-out/intermediate/pgf2jpg_101.txt'
 
-exe = Executer(cmd_file, 100)
+exe = Executer()
+exe.prepare_execution(cmd_file, 1)
 input()
+
 exe.start()
 
 d1 = datetime.now()
 while(1):
-    count, done = exe.get_progress()
-    print(count)
+    percent, count, done = exe.get_progress()
+    print("-------------------------------------------> Percent and count:", percent, count)
     time.sleep(0.1)
     if done:
         break
