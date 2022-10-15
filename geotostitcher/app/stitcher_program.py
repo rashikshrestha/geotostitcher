@@ -8,15 +8,33 @@ class Stitcher():
         self.config_file = None
         self.exe = Executer()
 
-    def preprocess(self):
+    def select_recordings(self):
         #! Get project name
         self.project_name = utils.get_project_name_from_input_dir(self.input_dir)
         print(f"Project: {self.project_name}")
 
         #! Get recordings and cameras
-        self.r_and_c = utils.get_recordings_and_cameras(self.input_dir)
-        self.recs = list(self.r_and_c.keys())
+        self.r_and_c_all = utils.get_recordings_and_cameras(self.input_dir)
+        self.recs_all = list(self.r_and_c_all.keys())
 
+        self.r_and_c = self.r_and_c_all
+        self.recs = self.recs_all
+
+    def update_recs_to_execute(self, new_recs):
+        self.recs = new_recs
+
+        new_r_and_c = {}     
+        for r in self.recs:
+            new_r_and_c[r] = self.r_and_c_all[r]
+
+        self.r_and_c = new_r_and_c
+
+        print('Finally')
+        print(self.recs)
+        print(self.r_and_c)
+
+
+    def preprocess(self):
         #! Make Output dirs
         utils.build_output_dirs(self.r_and_c, self.output_dir)
 
