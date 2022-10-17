@@ -46,15 +46,13 @@ class Stitcher():
         utils.generate_filtered_images_list_forall(self.input_dir, self.output_dir, self.r_and_c)
 
         #! Generate pgf to jpg commands
-        utils.generate_pgftojpg_commands_all(self.input_dir, self.output_dir, self.r_and_c,
-        '/home/rashik/workspace/geoautomation/geotostitcher/bin/pgf2jpg.dms')
+        utils.generate_pgftojpg_commands_all(self.input_dir, self.output_dir, self.r_and_c)
 
         #! Generate Move JPG commands
         utils.generate_movejpg_commands_all(self.input_dir, self.output_dir, self.r_and_c)
 
         #! Generate Stitch 360 commands
-        stitcher = '/home/rashik/workspace/geoautomation/geotostitcher/geotostitcher/simple_stitcher.py'
-        utils.generate_stitch_commands_all(stitcher, self.output_dir, self.recs, self.config_file)
+        utils.generate_stitch_commands_all(self.output_dir, self.recs, self.config_file)
 
     def process_pgf(self, rec, no_of_threads):
         """

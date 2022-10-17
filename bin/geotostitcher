@@ -1,1 +1,5 @@
+#!/usr/bin/bash
+
+export GEOTOSTITCHER=/home/rashik/workspace/geoautomation/geotostitcher
+export PYTHONPATH=$PYTHONPATH:$GEOTOSTITCHER
 python3 $GEOTOSTITCHER/geotostitcher/app/project1_support.py

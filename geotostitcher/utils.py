@@ -316,7 +316,7 @@ def get_list_from_filtered_images_file(file_path):
     return seq_list
 
 
-def generate_pgftojpg_commands(input_dir, output_dir, r, c, path_to_converter):
+def generate_pgftojpg_commands(input_dir, output_dir, r, c):
     """
     Generate pgftojpg commands for each recordings and store them in a text file.
     The text file is saved under output_dir/intermediate/pgf2jpg_{rec}.txt
@@ -347,7 +347,7 @@ def generate_pgftojpg_commands(input_dir, output_dir, r, c, path_to_converter):
     #! For each camera with pgf images:
     for c_pgf in cam_pgf:
         for s in seq:
-            cmd = f"{path_to_converter} {input_dir}/images/{r}/{c_pgf}/image.{s}.pgf {output_dir}/images/{r}/{c_pgf}/image.{s}.jpg"
+            cmd = f"pgf2jpg {input_dir}/images/{r}/{c_pgf}/image.{s}.pgf {output_dir}/images/{r}/{c_pgf}/image.{s}.jpg"
             f.write(cmd)
             f.write('\n')
 
@@ -357,12 +357,12 @@ def generate_pgftojpg_commands(input_dir, output_dir, r, c, path_to_converter):
     return 1
 
 
-def generate_pgftojpg_commands_all(input_dir, output_dir, r_and_c, path_to_converter):
+def generate_pgftojpg_commands_all(input_dir, output_dir, r_and_c):
     """
     Generate pgf2jpg commands for all recordings
     """
     for r,c in r_and_c.items():
-        generate_pgftojpg_commands(input_dir, output_dir, r, c, path_to_converter)
+        generate_pgftojpg_commands(input_dir, output_dir, r, c)
 
 
 def generate_movejpg_commands(input_dir, output_dir, r, c):
@@ -405,7 +405,7 @@ def generate_movejpg_commands_all(input_dir, output_dir, r_and_c):
         generate_movejpg_commands(input_dir, output_dir, r, c)
 
 
-def generate_stitch_commands(stitcher, output_dir, r, cfg_file):
+def generate_stitch_commands(output_dir, r, cfg_file):
     """
     Generate stitch commands for a recording
     
@@ -423,7 +423,7 @@ def generate_stitch_commands(stitcher, output_dir, r, cfg_file):
     f = open(output_filepath, "w")
 
     for s in seq:
-        command = f"python3 {stitcher} {output_dir} {r} {s} {cfg_file}"
+        command = f"stitcher {output_dir} {r} {s} {cfg_file}"
         f.write(command)
         f.write('\n')
 
@@ -432,12 +432,12 @@ def generate_stitch_commands(stitcher, output_dir, r, cfg_file):
     return 1
 
 
-def generate_stitch_commands_all(stitcher, output_dir, recs, cfg_file):
+def generate_stitch_commands_all(output_dir, recs, cfg_file):
     """
     Generate stitch commands for all recordings
     """
     for r in recs:
-        generate_stitch_commands(stitcher, output_dir, r, cfg_file)
+        generate_stitch_commands(output_dir, r, cfg_file)
 
 
 def get_commands_file(output_dir, command, rec):

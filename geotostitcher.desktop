@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=GeoTo Stitcher
+GenericName=GeoTo Stitcher
+Comment=Stitch panaroma Images
+Exec=/bin/bash -c "geotostitcher"
+Icon=geotologo
+Terminal=true
+Type=Application
