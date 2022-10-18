@@ -120,6 +120,8 @@ def stitch(ip_paths, op_path, cfg):
     # Save Low Quality (20% compression)
     cv2.imwrite(op_path, output, [int(cv2.IMWRITE_JPEG_QUALITY), cfg['quality']])
 
+    print(f"{op_path} Done!")
+
     return 1
 
 if __name__=='__main__':
@@ -145,5 +147,3 @@ if __name__=='__main__':
     cfg = read_cfg(cfg_file)
     ip_paths, op_path = get_io_images_path(output_dir, rec, seq, cfg['cam_seq'])
     done = stitch(ip_paths, op_path, cfg)
-    print(done)
-

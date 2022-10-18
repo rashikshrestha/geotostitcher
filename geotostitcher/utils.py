@@ -1,4 +1,5 @@
 import os
+from os.path import exists
 from pathlib import Path
 
 def get_project_name_from_input_dir(input_dir):
@@ -248,35 +249,40 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
     poses_file = get_poses_file_path_for_this_rec(input_dir, rec)
     img_seq_from_poses = get_image_seq_from_poses_file(poses_file)
 
-    seq_in_dirs = {}
-    for c in cams:
-        dir_to_check = f"{input_dir}/images/{rec}/{c}"
-        images = os.listdir(dir_to_check)
-        seq = []
+    #TODO Here I have set the camera names explicitely
+    #TODO But the number/names of cameras might vary in future!
+    #TODO No, make this flexible!!
+    #Here, top_cams = cams with pgf images and doesn't participate in panaroma generation
+    #      bottom_cams = cams with jpg images and participates in panaroma creation
+    top_cams = ['00','01','02','03','04','05','06','07']
+    bottom_cams = ['08', '09', '10', '11', '12', '13']
 
-        #! Extract only sequence number from the image name
-        for i in images:
-            seq.append(i.split('.')[1])
+    #! Check if the file correspondig to given seq number exists in the expected directories:
+    for seq in img_seq_from_poses:
+        seq_good = True
 
-        seq.sort()
-        seq_in_dirs[c] = seq
-
-    # filetred_poses = []
-    #! For each sequence number we get from poses file
-    for pose_seq in img_seq_from_poses:
-        available = 1
-        #! Check this seq inside each camera
-        for c in cams:
-            if pose_seq not in seq_in_dirs[c]:
-                # print(f"{pose_seq} not available in cam {c}")
-                available = 0
+        for c in top_cams:
+            file_to_search = f"{input_dir}/images/{rec}/{c}/image.{seq}.pgf"
+            if not exists(file_to_search):
+                seq_good = False
                 break
-        if available:
-            # filetred_poses.append(pose_seq)
-            f.write(pose_seq)
+
+        if not seq_good:
+            continue
+
+        for c in bottom_cams:
+            file_to_search_1 = f"{input_dir}/images/{rec}/{c}/image.{seq}.jpg"
+            file_to_search_2 = f"{output_dir}/images/{rec}/{c}/image.{seq}.jpg"
+            if not exists(file_to_search_1) and not exists(file_to_search_2):
+                seq_good = False
+                break
+                
+        if seq_good:
+            f.write(seq)
             f.write('\n')
 
     f.close()
+    print(f"Filter Images completed for rec {rec}")
 
 
 def generate_filtered_images_list_forall(input_dir, output_dir, r_and_c):
@@ -354,6 +360,8 @@ def generate_pgftojpg_commands(input_dir, output_dir, r, c):
     #! Close the file
     f.close()
 
+    print(f"Generate pgf2jpg commands completed for rec {r}")
+
     return 1
 
 
@@ -387,12 +395,14 @@ def generate_movejpg_commands(input_dir, output_dir, r, c):
     #! For each camera with pgf images:
     for c_jpg in cam_jpg:
         for s in seq:
-            cmd = f"cp {input_dir}/images/{r}/{c_jpg}/image.{s}.jpg {output_dir}/images/{r}/{c_jpg}/image.{s}.jpg"
+            cmd = f"mv {input_dir}/images/{r}/{c_jpg}/image.{s}.jpg {output_dir}/images/{r}/{c_jpg}/image.{s}.jpg"
             f.write(cmd)
             f.write('\n')
 
     #! Close the file
     f.close()
+
+    print(f"Generate movejpg commands completed for rec {r}")
 
     return 1
 

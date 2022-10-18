@@ -41,9 +41,9 @@ def auto_fill(*args):
     global stitcher, _w1
 
     #! Stuffs to fill automatically
-    input_dir = '/home/rashik/workspace/geoautomation/mrcsource-pave'
-    output_dir = '/home/rashik/workspace/geoautomation/mrcsource-pave-out'
-    config_file = '/home/rashik/workspace/geoautomation/stitch_config.yaml'
+    input_dir = '/home/rashik/all/Datasets/geo/mrcsource-pave'
+    output_dir = '/home/rashik/all/Datasets/geo/mrcsource-pave-out'
+    config_file = '/home/rashik/all/Datasets/geo/config_8MP.yaml'
 
     #! Add texts to the Entries
     _w1.input_dir.insert(0, input_dir)
