@@ -1,5 +1,7 @@
 import geotostitcher.utils as utils
 from geotostitcher.executer import Executer
+import subprocess
+import time
 
 class Stitcher():
     def __init__(self) -> None:
@@ -89,3 +91,34 @@ class Stitcher():
         execution_file = utils.get_commands_file(self.output_dir, 'stitch', rec)
         self.exe.prepare_execution(execution_file, no_of_threads)
         self.exe.start()
+
+    def generate_pts(self, rec, template_path):
+        """
+        Generate PTS files
+        
+        """
+        utils.generate_pts_files(self.output_dir, rec, template_path)
+
+    def stitch_360low(self, rec):
+        """
+        Stitch 360 low using PTGui
+        """
+        #! Start PTGui
+        command = f"/opt/ptgui/PTGui -x {self.output_dir}/intermediate/pts/{rec}_batch.ptgbatch"
+        process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+        # output, error = process.communicate()
+
+        time.sleep(1)
+
+    def get_stitch_360low_status(self):
+        """
+        Check PTGui Status
+        """
+        command = "pgrep PTGui"
+        process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+
+        if len(output) == 0:
+            return True
+        else:
+            return False

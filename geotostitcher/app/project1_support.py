@@ -7,6 +7,9 @@
 #    Oct 15, 2022 02:20:23 PM +0545  platform: Linux
 #    Oct 15, 2022 02:57:27 PM +0545  platform: Linux
 #    Oct 15, 2022 03:00:37 PM +0545  platform: Linux
+#    Oct 18, 2022 02:14:44 PM +0545  platform: Linux
+#    Oct 19, 2022 02:28:20 PM +0545  platform: Linux
+#    Oct 19, 2022 03:32:59 PM +0545  platform: Linux
 
 import sys
 import time
@@ -44,11 +47,13 @@ def auto_fill(*args):
     input_dir = '/home/rashik/all/Datasets/geo/mrcsource-pave'
     output_dir = '/home/rashik/all/Datasets/geo/mrcsource-pave-out'
     config_file = '/home/rashik/all/Datasets/geo/config_8MP.yaml'
+    template_path = '/home/rashik/all/Datasets/geo/template-8MP.pts'
 
     #! Add texts to the Entries
     _w1.input_dir.insert(0, input_dir)
     _w1.output_dir.insert(0, output_dir)
     _w1.config_file.insert(0, config_file)
+    _w1.pts_template.insert(0, template_path)
     
 
 def close_program(*args):
@@ -73,7 +78,6 @@ def select_output_dir(*args):
     global stitcher, _w1
     dir = filedialog.askdirectory()
     _w1.output_dir.insert(0, dir)
-
 
 def start_preprocess(*args):
     print('project1_support.start_preprocess')
@@ -224,6 +228,39 @@ def select_rec(*args):
 
     add_rec_as_checklist(_w2.recordings, stitcher.recs, stitcher.recs_all)
 
+def select_template(*args):
+    print('project1_support.select_template')
+    global stitcher, _w1
+    file_path = filedialog.askopenfilename()
+    _w1.pts_template.insert(0, file_path)
+
+def generate_pts(*args):
+    print('project1_support.generate_pts')
+    global stitcher, _w1
+    #! Get template path from GUI
+    template_path = _w1.pts_template.get()
+
+    recordings = stitcher.recs
+
+    for rec in recordings:
+        stitcher.generate_pts(rec, template_path)
+
+def generate_ptsstart_stitch_360low(*args):
+    print('project1_support.generate_ptsstart_stitch_360low')
+
+    recordings = stitcher.recs
+
+    for rec in recordings:
+        stitcher.stitch_360low(rec)
+
+        done = False
+        while not done:
+            done = stitcher.get_stitch_360low_status()
+            root.update_idletasks()
+            root.update()
+            time.sleep(0.05)
+
+        print(f"Completed stitching 360low for rec {rec}")
 
 if __name__ == '__main__':
     project1.start_up()

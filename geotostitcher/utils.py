@@ -120,6 +120,11 @@ def build_output_dirs(rec_and_cams, output_dir):
     intermediate_dir = Path(output_dir+'/intermediate')
     intermediate_dir.mkdir(parents=True, exist_ok=True)
 
+    #! Build dirs for pts files
+    for r,cams in rec_and_cams.items():
+        pts_dir = Path(output_dir+'/intermediate/pts/'+r)
+        pts_dir.mkdir(parents=True, exist_ok=True)
+
 
 def verify_output_dirs(rec_and_cams, output_dir):
     """
@@ -457,6 +462,105 @@ def get_commands_file(output_dir, command, rec):
     file = f"{output_dir}/intermediate/{command}_{rec}.txt"
     return file
 
+
+def generate_batch_files(output_dir, r):
+    """
+    Generate Batch files for a set of pts files
+    """
+
+    #! Get the seq from filtred_{rec}.txt file
+    filtered_filepath = f"{output_dir}/intermediate/filtered_{r}.txt"
+    if not Path(filtered_filepath).exists():
+        print(filtered_filepath, "doesn't exists") 
+        return 0
+    else:
+        seq = get_list_from_filtered_images_file(filtered_filepath)
+
+    batch_file_path = f"{output_dir}/intermediate/pts/{r}_batch.ptgbatch"
+    f = open(batch_file_path, "w") 
+
+    #! Starting of a batch file
+    f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+    f.write('<PTGuiBatchList>\n')
+    
+    #! Middle of batch file
+    for s in seq:
+        to_write = f"<Project FileName=\"{output_dir}/intermediate/pts/{r}/image.{s}.pts\" Enabled=\"true\" DeleteWhenDone=\"false\"/>\n"
+        f.write(to_write)
+
+
+    #! End of a batch file
+    f.write('</PTGuiBatchList>\n')
+
+    f.close()
+
+    print(f"Done writing batch file for rec {r}")
+
+
+def generate_pts_files(output_dir, r, template_path):
+    """
+    Generate PTS files for a recording 
+    
+    """
+    #! Keyword selector
+    word = '$$$'
+
+    #! Get the seq from filtred_{rec}.txt file
+    filtered_filepath = f"{output_dir}/intermediate/filtered_{r}.txt"
+    if not Path(filtered_filepath).exists():
+        print(filtered_filepath, "doesn't exists") 
+        return 0
+    else:
+        seq = get_list_from_filtered_images_file(filtered_filepath)
+
+    #! For each seq:
+    for s in seq:
+        print(f"Generating pts file for sequence {seq} or recording {r}")
+        output_file = f"{output_dir}/intermediate/pts/{r}/image.{s}.pts"
+        f = open(output_file, "w")
+
+
+        #! Read the template file
+        with open(template_path, "r") as file:
+            for line_number, line in enumerate(file, start=1):  
+
+                #! For each line in template:
+                if word in line:
+                    # print(f"Word '{word}' found on line {line_number}")
+                    splits = line.split('$$$')
+                    new_line_list = []
+                    #! For each word in the line:
+                    for w in splits:
+                        if w == 'output_file_path':
+                            w = f"{output_dir}/images/{r}/360low/image.{s}.jpg"
+                        elif w == 'output_jpg_quality':
+                            w = '75' #TODO Get jpg quality from some config or as parameters
+                        elif w.startswith('image_from_camera'):
+                            # print(w.split('_'))
+                            # input()
+                            camera = w.split('_')[-1]
+                            # print(camera)
+                            # input()
+                            w = f"{output_dir}/images/{r}/{camera}/image.{s}.jpg"
+                            # print(w)
+                            # input()
+
+                        new_line_list.append(w)
+
+
+                    new_line = ''.join(new_line_list)
+
+                    f.write(new_line)
+
+                else:
+                    f.write(line)
+
+        print("Done generating pts files")
+        generate_batch_files(output_dir, r)
+
+
+
+    
 
 
 
