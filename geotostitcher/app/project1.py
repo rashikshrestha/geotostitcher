@@ -432,7 +432,7 @@ class geoto_stitcher:
         self.stitch_360low_block.place(relx=0.028, rely=0.741, relheight=0.16
                 , relwidth=0.945)
         self.stitch_360low_block.configure(relief='groove')
-        self.stitch_360low_block.configure(text='''Stitch 360low''')
+        self.stitch_360low_block.configure(text='''Stitch 360high''')
 
         self.Label6 = tk.Label(self.stitch_360low_block)
         self.Label6.place(relx=0.022, rely=0.227, height=23, width=129

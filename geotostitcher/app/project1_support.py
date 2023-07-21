@@ -44,10 +44,10 @@ def auto_fill(*args):
     global stitcher, _w1
 
     #! Stuffs to fill automatically
-    input_dir = '/home/rashik/all/Datasets/geo/mrcsource-pave'
-    output_dir = '/home/rashik/all/Datasets/geo/mrcsource-pave-out'
-    config_file = '/home/rashik/all/Datasets/geo/config_8MP.yaml'
-    template_path = '/home/rashik/all/Datasets/geo/template-8MP.pts'
+    input_dir = '/media/leon/BLUE/calibration_room/calibration'
+    output_dir = '/media/leon/BLUE/calibration_room/calibration-out'
+    config_file = '/media/leon/BLUE/calibration_room/config.yaml'
+    template_path = '/media/leon/BLUE/calibration_room/template.pts'
 
     #! Add texts to the Entries
     _w1.input_dir.insert(0, input_dir)
@@ -246,7 +246,7 @@ def generate_pts(*args):
         stitcher.generate_pts(rec, template_path)
 
 def generate_ptsstart_stitch_360low(*args):
-    print('project1_support.generate_ptsstart_stitch_360low')
+    print('project1_support.generate_ptsstart_stitch_360high')
 
     recordings = stitcher.recs
 
@@ -260,7 +260,7 @@ def generate_ptsstart_stitch_360low(*args):
             root.update()
             time.sleep(0.05)
 
-        print(f"Completed stitching 360low for rec {rec}")
+        print(f"Completed stitching 360high for rec {rec}")
 
 if __name__ == '__main__':
     project1.start_up()

@@ -110,9 +110,9 @@ def build_output_dirs(rec_and_cams, output_dir):
             cam_dir = Path(output_dir+'/images/'+r+'/'+c)
             cam_dir.mkdir(parents=True, exist_ok=True)
 
-        #! Build dirs for 360 and 360low
+        #! Build dirs for 360 and 360high
         dir360 = Path(output_dir+'/images/'+r+'/360')
-        dir360low = Path(output_dir+'/images/'+r+'/360low')
+        dir360low = Path(output_dir+'/images/'+r+'/360high')
         dir360.mkdir(parents=True, exist_ok=True)
         dir360low.mkdir(parents=True, exist_ok=True)
 
@@ -162,7 +162,7 @@ def verify_output_dirs(rec_and_cams, output_dir):
         #! Check dirs for 360 and 360low
         dir360 = Path(output_dir+'/images/'+r+'/360')
         success = check_dir(dir360) and success
-        dir360low = Path(output_dir+'/images/'+r+'/360low')
+        dir360low = Path(output_dir+'/images/'+r+'/360high')
         success = check_dir(dir360low) and success
 
     #! Check intermediate dir
@@ -253,6 +253,7 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
 
     poses_file = get_poses_file_path_for_this_rec(input_dir, rec)
     img_seq_from_poses = get_image_seq_from_poses_file(poses_file)
+    print(img_seq_from_poses)
 
     #TODO Here I have set the camera names explicitely
     #TODO But the number/names of cameras might vary in future!
@@ -515,7 +516,6 @@ def generate_pts_files(output_dir, r, template_path):
 
     #! For each seq:
     for s in seq:
-        print(f"Generating pts file for sequence {seq} or recording {r}")
         output_file = f"{output_dir}/intermediate/pts/{r}/image.{s}.pts"
         f = open(output_file, "w")
 
@@ -532,9 +532,9 @@ def generate_pts_files(output_dir, r, template_path):
                     #! For each word in the line:
                     for w in splits:
                         if w == 'output_file_path':
-                            w = f"{output_dir}/images/{r}/360low/image.{s}.jpg"
+                            w = f"{output_dir}/images/{r}/360high/image.{s}.jpg"
                         elif w == 'output_jpg_quality':
-                            w = '75' #TODO Get jpg quality from some config or as parameters
+                            w = '70' #TODO Get jpg quality from some config or as parameters
                         elif w.startswith('image_from_camera'):
                             # print(w.split('_'))
                             # input()
@@ -555,8 +555,9 @@ def generate_pts_files(output_dir, r, template_path):
                 else:
                     f.write(line)
 
-        print("Done generating pts files")
-        generate_batch_files(output_dir, r)
+        print(f"Generated pts file for sequence {s} of recording {r}")
+
+    generate_batch_files(output_dir, r)
 
 
 

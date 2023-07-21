@@ -77,7 +77,7 @@ def build_output_dirs(output_dir, recordings, cameras):
             cam_dir.mkdir(parents=True, exist_ok=True)
 
         dir360 = Path(output_dir+'/images/'+r+'/360')
-        dir360low = Path(output_dir+'/images/'+r+'/360low')
+        dir360low = Path(output_dir+'/images/'+r+'/360high')
         dir360.mkdir(parents=True, exist_ok=True)
         dir360low.mkdir(parents=True, exist_ok=True)
 
@@ -106,7 +106,7 @@ def verify_output_dirs(output_dir, recordings, cameras):
         else:
             return 1
 
-    # Build cameras dir 00-13,360,360low for each recordings
+    # Build cameras dir 00-13,360,360high for each recordings
     for r in recordings:
         for c in cameras:
             cam_dir = Path(output_dir+'/images/'+r+'/'+c)
@@ -114,7 +114,7 @@ def verify_output_dirs(output_dir, recordings, cameras):
 
         dir360 = Path(output_dir+'/images/'+r+'/360')
         success = check_dir(dir360) and success
-        dir360low = Path(output_dir+'/images/'+r+'/360low')
+        dir360low = Path(output_dir+'/images/'+r+'/360high')
         success = check_dir(dir360low) and success
 
     # Build intermediate dir

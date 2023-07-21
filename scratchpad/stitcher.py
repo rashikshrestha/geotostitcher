@@ -48,7 +48,7 @@ def get_io_paths(input_dir, output_dir, cam_seq, image):
 
     op_paths = []
     op_paths.append(output_dir+'/360/'+image)
-    op_paths.append(output_dir+'/360low/'+image)
+    op_paths.append(output_dir+'/360high/'+image)
 
     return ip_paths, op_paths
 

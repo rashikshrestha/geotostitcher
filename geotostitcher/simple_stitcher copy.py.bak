@@ -63,62 +63,62 @@ def read_cfg(config_file):
 def stitch(ip_paths, op_path, cfg):
     """
     Stitch images to create panaroma
-    Here, we simply stack images one after another without any rotation or shifting
-    Moreover, this function has been designed to stack older images
-    So some cameras needs needs rotation
-    Cam 9,11 = Clockwise
-    Cam 8,10 = Anticlockise
-    Cam 12, 13 = Regular
     """
 
     #! Get some configs
     h = cfg['h']
     w = cfg['w']
-    cam_seq = cfg['cam_seq']
-   
-    no_of_cams = len(cam_seq)
+    scale = cfg['scale']
+    angle = cfg['angle']
+    x_start = cfg['x_start']
+    y_shift = cfg['y_shift']
 
-    seq_of_imgs = []
+    #! Some one time tasks
+    mask = np.ones(((h, w, 3))).astype(np.float32)
+    rot_axis = get_rot_axis(h, w, scale)
+    panaroma = np.zeros((h+int(2*scale*h), int(x_start[-1]+w), 3)).astype(np.float32)
+
+    no_of_cams = len(cfg['cam_seq'])
     error = 0
     for i in range(no_of_cams):
-
+        # print("Loop: ", i)
         #! Break the loop if image doesn't exist
         if not os.path.exists(ip_paths[i]):
             print("Error: ", ip_paths[i], "doesn't exist!")
             error = 1
             break
 
-        # Read image i
-        img = cv2.imread(ip_paths[i])
+        # Read image
+        img = cv2.imread(ip_paths[i]).astype(np.float32)/255.
+        # print(img.shape)
 
-        # Rotate and crop as per necesary
-        if cam_seq[i]=='08' or cam_seq[i]=='10':
-            # Rotate 90 degreed Anticlockwise
-            img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
-            # And Crop the top
-            img = img[:2472,:,:]
+        # Rotate and y-shift both image and mask
+        img_final, mask_final = rotate_and_shift(img, mask, -angle[i], rot_axis, -y_shift[i])
 
-        elif cam_seq[i]=='09' or cam_seq[i]=='11':
-            # Rotate 90 degreed Anticlockwise
-            img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
-            # And Crop the top
-            img = img[:2472,:,:]
+        # Add image to panaroma
+        start = x_start[i]
+        end = start+w+int(2*scale*w)
+        to_replace = panaroma[:, start:end, :]
 
+        # print('start: ', start, 'end: ', end)
+        # print(to_replace.shape , "and", mask_final.shape)
 
-    
-        seq_of_imgs.append(img)
+        bg = np.multiply(to_replace, 1-mask_final)
+        replace_by = np.add(bg, img_final)
+        panaroma[:, start:end, :] = replace_by
 
     if error:
         print("Failed to create panaroma!")
         return 0 
 
-    output = np.concatenate(seq_of_imgs, 1)
-
-
+    # Prepare the output image
+    output = np.copy(panaroma)
+    output *= 255.
+    # output = output.astype(np.uint8)[50:-50, :19874, :]
+    output = output.astype(np.uint8)[:, :27784, :]
 
     # Save Low Quality (20% compression)
-    # cv2.imwrite(op_path, output, [int(cv2.IMWRITE_JPEG_QUALITY), cfg['quality']])
-    cv2.imwrite(op_path, output, [int(cv2.IMWRITE_JPEG_QUALITY), 75])
+    cv2.imwrite(op_path, output, [int(cv2.IMWRITE_JPEG_QUALITY), cfg['quality']])
 
     print(f"{op_path} Done!")
 
