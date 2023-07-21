@@ -516,10 +516,7 @@ def generate_pts_files(output_dir, r, template_path):
 
     #! For each seq:
     for s in seq:
-<<<<<<< HEAD
-=======
         print(f"Generating pts file for sequence {s} of recording {r}")
->>>>>>> 766ea5490b3b2e1552912cf3bb6c9f0261a6253e
         output_file = f"{output_dir}/intermediate/pts/{r}/image.{s}.pts"
         f = open(output_file, "w")
 
