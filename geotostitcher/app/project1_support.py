@@ -12,6 +12,7 @@
 #    Oct 19, 2022 03:32:59 PM +0545  platform: Linux
 #    Jul 22, 2023 11:40:59 PM +0545  platform: Linux
 #    Jul 23, 2023 12:17:43 AM +0545  platform: Linux
+#    Jul 23, 2023 01:25:18 AM +0545  platform: Linux
 
 import sys
 import time
@@ -187,7 +188,6 @@ def close_select_rec(*args):
 
     _top2.destroy()
 
-
 def add_proj_as_radio(holder, prj_all):
     # global list_of_prj_radio_btn, list_of_prj_radio_var
     global prj_var
@@ -216,7 +216,6 @@ def add_proj_as_radio(holder, prj_all):
         list_of_prj_radio_btn.append(cb)
 
     list_of_prj_radio_btn[0].select() # Select first radio button
-
 
 def add_rec_as_checklist(holder, rec, rec_all):
     global list_of_checks, check_var
@@ -335,12 +334,17 @@ def select_s17(*args):
     stitcher.main_dir = f"/home/leon/rashik/s17"
     print(f"Main dir: {stitcher.main_dir}")
 
-
 def select_s18(*args):
     print("Select s18")
     stitcher.main_dir = f"/home/leon/rashik/s18"
     print(f"Main dir: {stitcher.main_dir}")
 
+def close_select_prj(*args):
+    if _debug:
+        print('project1_support.close_select_prj')
+        for arg in args:
+            print ('    another arg:', arg)
+        sys.stdout.flush()
 
 if __name__ == '__main__':
     project1.start_up()
