@@ -5,14 +5,14 @@ import time
 
 class Stitcher():
     def __init__(self) -> None:
-        self.main_dir = None
+        self.main_dir = f"/home/leon/rashik/s17"
         self.input_dir = None
         self.output_dir = None
         self.config_file = None
         self.exe = Executer()
 
     def get_projects(self):
-        return utils.list_prj(self.main_dir)
+        self.prj_all = utils.list_prj(self.main_dir)
 
     def select_recordings(self):
         #! Get project name

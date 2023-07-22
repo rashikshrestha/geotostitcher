@@ -187,6 +187,37 @@ def close_select_rec(*args):
 
     _top2.destroy()
 
+
+def add_proj_as_radio(holder, prj_all):
+    # global list_of_prj_radio_btn, list_of_prj_radio_var
+    global prj_var
+
+    list_of_prj_radio_btn = []
+    # list_of_prj_radio_var = []
+
+    prj_var = tk.StringVar()
+
+    y = 0.225
+    for i in range(len(prj_all)):
+
+        cb = tk.Radiobutton(holder)
+
+        cb.place(relx=0.018, rely=y+i*0.075, relheight=0.073, relwidth=0.593, bordermode='ignore')
+        cb.configure(activebackground="beige")
+        cb.configure(anchor='w')
+        cb.configure(compound='left')
+        cb.configure(justify='left')
+        cb.configure(selectcolor="#d9d9d9")
+        cb.configure(text=prj_all[i])
+        cb.configure(value=prj_all[i])
+        cb.configure(variable=prj_var)
+
+        # list_of_prj_radio_var.append(tkvar)
+        list_of_prj_radio_btn.append(cb)
+
+    list_of_prj_radio_btn[0].select() # Select first radio button
+
+
 def add_rec_as_checklist(holder, rec, rec_all):
     global list_of_checks, check_var
     check_var = []
@@ -277,6 +308,8 @@ def select_project(*args):
     _w3 = project1.project(_top3)
 
     print(stitcher.get_projects())
+
+    add_proj_as_radio(_w3.projects, stitcher.prj_all)
 
 def select_recording(*args):
     print('Select Recording')
