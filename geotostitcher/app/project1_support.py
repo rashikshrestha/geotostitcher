@@ -10,6 +10,8 @@
 #    Oct 18, 2022 02:14:44 PM +0545  platform: Linux
 #    Oct 19, 2022 02:28:20 PM +0545  platform: Linux
 #    Oct 19, 2022 03:32:59 PM +0545  platform: Linux
+#    Jul 22, 2023 11:40:59 PM +0545  platform: Linux
+#    Jul 23, 2023 12:17:43 AM +0545  platform: Linux
 
 import sys
 import time
@@ -37,6 +39,7 @@ def main(*args):
     stitcher = Stitcher() 
 
     # Main loop
+
     root.mainloop()
 
 def auto_fill(*args):
@@ -261,6 +264,50 @@ def generate_ptsstart_stitch_360low(*args):
             time.sleep(0.05)
 
         print(f"Completed stitching 360high for rec {rec}")
+
+def select_project(*args):
+    print("Select Project")
+
+    global stitcher, _w1
+    disk = _w1.selectedButton.get()
+
+    # Creates a toplevel widget.
+    global _top3, _w3
+    _top3 = tk.Toplevel(root)
+    _w3 = project1.project(_top3)
+
+    print(stitcher.get_projects())
+
+def select_recording(*args):
+    print('Select Recording')
+    global stitcher, _w1
+
+    #! Get the input_dir, output_dir and config_file form GUI
+    stitcher.input_dir = _w1.input_dir.get()
+    stitcher.output_dir = _w1.output_dir.get()
+    stitcher.config_file = _w1.config_file.get()
+
+    #! Run select_rec of Stitcher
+    stitcher.select_recordings()
+
+    #! Creates a toplevel widget "Select Recording"
+    global _top2, _w2
+    _top2 = tk.Toplevel(root)
+    _w2 = project1.select_rec(_top2)
+
+    add_rec_as_checklist(_w2.recordings, stitcher.recs, stitcher.recs_all)
+
+def select_s17(*args):
+    print("Select s17")
+    stitcher.main_dir = f"/home/leon/rashik/s17"
+    print(f"Main dir: {stitcher.main_dir}")
+
+
+def select_s18(*args):
+    print("Select s18")
+    stitcher.main_dir = f"/home/leon/rashik/s18"
+    print(f"Main dir: {stitcher.main_dir}")
+
 
 if __name__ == '__main__':
     project1.start_up()

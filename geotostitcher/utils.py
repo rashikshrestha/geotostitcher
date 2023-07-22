@@ -19,6 +19,16 @@ def get_project_name_from_input_dir(input_dir):
     splits = input_dir.split('/')
     return splits[-1]
 
+def list_prj(path):
+    files = os.listdir(path)
+
+    for f in files:
+        if f[-3:] == 'out':
+            files.remove(f)
+
+    return files
+
+
 
 def get_recordings(input_dir):
     """
