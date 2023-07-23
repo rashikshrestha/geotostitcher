@@ -35,6 +35,8 @@ def main(*args):
     _top1 = root
     _w1 = project1.geoto_stitcher(_top1)
 
+    _w1.pts_template.insert(0, '/home/leon/rashik/pts_templates/kona2-12mp.pts')
+
     # Backbone
     global stitcher
     stitcher = Stitcher() 
@@ -84,14 +86,14 @@ def select_output_dir(*args):
     _w1.output_dir.insert(0, dir)
 
 def start_preprocess(*args):
-    print('project1_support.start_preprocess')
+    print('Preprocessing ...')
     
     stitcher.preprocess()
-    _w1.no_of_rec['text'] = len(stitcher.recs)
-    _w1.project_name['text'] = stitcher.project_name
+    # _w1.no_of_rec['text'] = len(stitcher.recs)
+    # _w1.project_name['text'] = stitcher.project_name
 
 def start_process_jpg(*args):
-    print('project1_support.start_process_jpg')
+    print('Processing JPG ...')
     global stitcher, _w1, root
     threads = int(_w1.jpg_threads.get())
 
@@ -114,7 +116,7 @@ def start_process_jpg(*args):
     print("Finish JPG")
 
 def start_process_pgf(*args):
-    print('project1_support.start_process_pgf')
+    print('Processing PGF ...')
     global stitcher, _w1, root
     threads = int(_w1.pgf_threads.get())
 
@@ -172,21 +174,15 @@ def unselect_all_rec(*args):
         check.deselect()
 
 def close_select_rec(*args):
-    global _top2, list_of_checks, check_var, stitcher
-    print('project1_support.close_select_rec')
+    global _top2, check_var, stitcher, _w1
 
-    no_of_checks = len(check_var)
+    stitcher.recs = [check_var.get()]
+    _w1.rec_num['text'] = stitcher.recs[0]
 
-    checked_rec = []
-    for i in range(no_of_checks):
-        if check_var[i].get():
-            checked_rec.append(list_of_checks[i].cget('text'))
-
-    print(checked_rec)
-
-    stitcher.update_recs_to_execute(checked_rec)
+    stitcher.update_recs_to_execute(stitcher.recs)
 
     _top2.destroy()
+
 
 def add_proj_as_radio(holder, prj_all):
     # global list_of_prj_radio_btn, list_of_prj_radio_var
@@ -217,14 +213,16 @@ def add_proj_as_radio(holder, prj_all):
 
     list_of_prj_radio_btn[0].select() # Select first radio button
 
-def add_rec_as_checklist(holder, rec, rec_all):
-    global list_of_checks, check_var
-    check_var = []
+def add_rec_as_radio(holder, rec_all):
+    global check_var
+
     list_of_checks = []
+
+    check_var = tk.StringVar()
     y = 0.225
     for i in range(len(rec_all)):
-        tkvar = tk.IntVar()
-        cb = tk.Checkbutton(holder)
+        cb = tk.Radiobutton(holder)
+
         cb.place(relx=0.018, rely=y+i*0.075, relheight=0.073
                 , relwidth=0.193, bordermode='ignore')
         cb.configure(activebackground="beige")
@@ -233,33 +231,33 @@ def add_rec_as_checklist(holder, rec, rec_all):
         cb.configure(justify='left')
         cb.configure(selectcolor="#d9d9d9")
         cb.configure(text=rec_all[i])
-        cb.configure(variable=tkvar)
+        cb.configure(value=rec_all[i])
+        cb.configure(variable=check_var)
 
-        if rec_all[i] in rec:
-            cb.select()
-
-        check_var.append(tkvar)
         list_of_checks.append(cb)
+
+    list_of_checks[0].select()
+
     
 
-def select_rec(*args):
-    print('project1_support.select_rec')
-    global stitcher, _w1
+# def select_rec(*args):
+#     print('project1_support.select_rec')
+#     global stitcher, _w1
 
-    #! Get the input_dir, output_dir and config_file form GUI
-    stitcher.input_dir = _w1.input_dir.get()
-    stitcher.output_dir = _w1.output_dir.get()
-    stitcher.config_file = _w1.config_file.get()
+#     #! Get the input_dir, output_dir and config_file form GUI
+#     stitcher.input_dir = _w1.input_dir.get()
+#     stitcher.output_dir = _w1.output_dir.get()
+#     stitcher.config_file = _w1.config_file.get()
 
-    #! Run select_rec of Stitcher
-    stitcher.select_recordings()
+#     #! Run select_rec of Stitcher
+#     stitcher.select_recordings()
 
-    #! Creates a toplevel widget "Select Recording"
-    global _top2, _w2
-    _top2 = tk.Toplevel(root)
-    _w2 = project1.select_rec(_top2)
+#     #! Creates a toplevel widget "Select Recording"
+#     global _top2, _w2
+#     _top2 = tk.Toplevel(root)
+#     _w2 = project1.select_rec(_top2)
 
-    add_rec_as_checklist(_w2.recordings, stitcher.recs, stitcher.recs_all)
+#     add_rec_as_checklist(_w2.recordings, stitcher.recs, stitcher.recs_all)
 
 def select_template(*args):
     print('project1_support.select_template')
@@ -268,7 +266,7 @@ def select_template(*args):
     _w1.pts_template.insert(0, file_path)
 
 def generate_pts(*args):
-    print('project1_support.generate_pts')
+    print('\nGenerating PTS ..')
     global stitcher, _w1
     #! Get template path from GUI
     template_path = _w1.pts_template.get()
@@ -314,11 +312,6 @@ def select_recording(*args):
     print('Select Recording')
     global stitcher, _w1
 
-    #! Get the input_dir, output_dir and config_file form GUI
-    stitcher.input_dir = _w1.input_dir.get()
-    stitcher.output_dir = _w1.output_dir.get()
-    stitcher.config_file = _w1.config_file.get()
-
     #! Run select_rec of Stitcher
     stitcher.select_recordings()
 
@@ -327,7 +320,7 @@ def select_recording(*args):
     _top2 = tk.Toplevel(root)
     _w2 = project1.select_rec(_top2)
 
-    add_rec_as_checklist(_w2.recordings, stitcher.recs, stitcher.recs_all)
+    add_rec_as_radio(_w2.recordings, stitcher.recs_all)
 
 def select_s17(*args):
     print("Select s17")
@@ -340,11 +333,18 @@ def select_s18(*args):
     print(f"Main dir: {stitcher.main_dir}")
 
 def close_select_prj(*args):
-    if _debug:
-        print('project1_support.close_select_prj')
-        for arg in args:
-            print ('    another arg:', arg)
-        sys.stdout.flush()
+    global _top3, prj_var, stitcher, _w1
+
+    stitcher.project_name = prj_var.get()
+    stitcher.input_dir = f"{stitcher.main_dir}/{prj_var.get()}"
+    stitcher.output_dir = f"{stitcher.main_dir}/{prj_var.get()}-out"
+
+    print(f"{stitcher.input_dir}")
+    print(f"{stitcher.output_dir}")
+
+    _w1.project_name['text'] = stitcher.project_name
+
+    _top3.destroy()
 
 if __name__ == '__main__':
     project1.start_up()

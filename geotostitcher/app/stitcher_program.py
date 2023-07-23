@@ -9,22 +9,25 @@ class Stitcher():
         self.input_dir = None
         self.output_dir = None
         self.config_file = None
+        self.project_name = None
+        self.rec_num = None
         self.exe = Executer()
+        self.recs = None
 
     def get_projects(self):
         self.prj_all = utils.list_prj(self.main_dir)
 
     def select_recordings(self):
         #! Get project name
-        self.project_name = utils.get_project_name_from_input_dir(self.input_dir)
-        print(f"Project: {self.project_name}")
+        # self.project_name = utils.get_project_name_from_input_dir(self.input_dir)
+        # print(f"Project: {self.project_name}")
 
         #! Get recordings and cameras
         self.r_and_c_all = utils.get_recordings_and_cameras(self.input_dir)
         self.recs_all = list(self.r_and_c_all.keys())
 
         self.r_and_c = self.r_and_c_all
-        self.recs = self.recs_all
+        # self.recs = self.recs_all
 
     def update_recs_to_execute(self, new_recs):
         self.recs = new_recs
@@ -35,7 +38,7 @@ class Stitcher():
 
         self.r_and_c = new_r_and_c
 
-        print('Finally')
+        print('Choosen Ones:')
         print(self.recs)
         print(self.r_and_c)
 
@@ -49,7 +52,7 @@ class Stitcher():
         print(f"Output dirs status = {out_dir_ok}")
 
         #! Generate filetred images list
-        utils.generate_filtered_images_list_forall(self.input_dir, self.output_dir, self.r_and_c)
+        # utils.generate_filtered_images_list_forall(self.input_dir, self.output_dir, self.r_and_c)
 
         #! Generate pgf to jpg commands
         utils.generate_pgftojpg_commands_all(self.input_dir, self.output_dir, self.r_and_c)
@@ -58,7 +61,10 @@ class Stitcher():
         utils.generate_movejpg_commands_all(self.input_dir, self.output_dir, self.r_and_c)
 
         #! Generate Stitch 360 commands
-        utils.generate_stitch_commands_all(self.output_dir, self.recs, self.config_file)
+        # utils.generate_stitch_commands_all(self.output_dir, self.recs, self.config_file)
+
+        #! Generate Stitch 360low commands
+        utils.generate_360low_commands_all(self.output_dir, self.recs)
 
     def process_pgf(self, rec, no_of_threads):
         """

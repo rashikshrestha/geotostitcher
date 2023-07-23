@@ -1,6 +1,7 @@
 import os
 from os.path import exists
 from pathlib import Path
+from tqdm import tqdm
 
 def get_project_name_from_input_dir(input_dir):
     """
@@ -120,11 +121,12 @@ def build_output_dirs(rec_and_cams, output_dir):
             cam_dir = Path(output_dir+'/images/'+r+'/'+c)
             cam_dir.mkdir(parents=True, exist_ok=True)
 
-        #! Build dirs for 360 and 360high
-        dir360 = Path(output_dir+'/images/'+r+'/360')
-        dir360low = Path(output_dir+'/images/'+r+'/360high')
-        dir360.mkdir(parents=True, exist_ok=True)
+        #! Build dirs for 360low and 360high
+        dir360low = Path(output_dir+'/images/'+r+'/360low')
         dir360low.mkdir(parents=True, exist_ok=True)
+
+        dir360high = Path(output_dir+'/images/'+r+'/360high')
+        dir360high.mkdir(parents=True, exist_ok=True)
 
     #! Build intermediate dir
     intermediate_dir = Path(output_dir+'/intermediate')
@@ -170,7 +172,7 @@ def verify_output_dirs(rec_and_cams, output_dir):
             success = check_dir(cam_dir) and success
 
         #! Check dirs for 360 and 360low
-        dir360 = Path(output_dir+'/images/'+r+'/360')
+        dir360 = Path(output_dir+'/images/'+r+'/360low')
         success = check_dir(dir360) and success
         dir360low = Path(output_dir+'/images/'+r+'/360high')
         success = check_dir(dir360low) and success
@@ -263,7 +265,7 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
 
     poses_file = get_poses_file_path_for_this_rec(input_dir, rec)
     img_seq_from_poses = get_image_seq_from_poses_file(poses_file)
-    print(img_seq_from_poses)
+    # print(img_seq_from_poses)
 
     #TODO Here I have set the camera names explicitely
     #TODO But the number/names of cameras might vary in future!
@@ -274,7 +276,7 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
     bottom_cams = ['08', '09', '10', '11', '12', '13']
 
     #! Check if the file correspondig to given seq number exists in the expected directories:
-    for seq in img_seq_from_poses:
+    for seq in tqdm(img_seq_from_poses):
         seq_good = True
 
         for c in top_cams:
@@ -457,6 +459,40 @@ def generate_stitch_commands(output_dir, r, cfg_file):
 
     return 1
 
+def generate_360low_commands(output_dir, r):
+    """
+    Generate 360low commands for a recording
+    # convert -quality 27 360high/image.104000000.jpg 360low/image.104000000.jpg
+    
+    """
+    #! Get the seq from filtred_{rec}.txt file
+    filtered_filepath = f"{output_dir}/intermediate/filtered_{r}.txt"
+    if not Path(filtered_filepath).exists():
+        print(filtered_filepath, "doesn't exists") 
+        return 0
+    else:
+        seq = get_list_from_filtered_images_file(filtered_filepath)
+
+    #! Open file to store the commands
+    output_filepath = f"{output_dir}/intermediate/360low_{r}.txt"
+    f = open(output_filepath, "w")
+
+    for s in seq:
+        command = f"convert -quality 27 {output_dir}/images/{r}/360high/image.{s}.jpg {output_dir}/images/{r}/360low/image.{s}.jpg"
+        f.write(command)
+        f.write('\n')
+
+    f.close()
+
+    return 1
+
+def generate_360low_commands_all(output_dir, recs):
+    """
+    Generate 360low commands for all recordings
+    """
+    for r in recs:
+        generate_360low_commands(output_dir, r)
+
 
 def generate_stitch_commands_all(output_dir, recs, cfg_file):
     """
@@ -525,8 +561,8 @@ def generate_pts_files(output_dir, r, template_path):
         seq = get_list_from_filtered_images_file(filtered_filepath)
 
     #! For each seq:
-    for s in seq:
-        print(f"Generating pts file for sequence {s} of recording {r}")
+    for s in tqdm(seq):
+        # print(f"Generating pts file for sequence {s} of recording {r}")
         output_file = f"{output_dir}/intermediate/pts/{r}/image.{s}.pts"
         f = open(output_file, "w")
 

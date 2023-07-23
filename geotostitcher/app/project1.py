@@ -218,7 +218,7 @@ class geoto_stitcher:
         self.pgf_threads.configure(font="TkDefaultFont")
         self.pgf_threads.configure(highlightbackground="black")
         self.pgf_threads.configure(selectbackground="#c4c4c4")
-        self.value_list = ['5',]
+        self.value_list = ['200',]
         self.pgf_threads.configure(values=self.value_list)
         self.pgf_label = tk.Label(self.process_pgf_block)
         self.pgf_label.place(relx=0.029, rely=0.254, height=29, width=130
@@ -285,7 +285,7 @@ class geoto_stitcher:
         self.jpg_threads.configure(font="TkDefaultFont")
         self.jpg_threads.configure(highlightbackground="black")
         self.jpg_threads.configure(selectbackground="#c4c4c4")
-        self.value_list = ['5',]
+        self.value_list = ['200',]
         self.jpg_threads.configure(values=self.value_list)
         self.jpg_label = tk.Label(self.process_jpg_block)
         self.jpg_label.place(relx=0.029, rely=0.25, height=29, width=130
