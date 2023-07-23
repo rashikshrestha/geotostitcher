@@ -90,6 +90,18 @@ class Stitcher():
         self.exe.prepare_execution(execution_file, no_of_threads)
         self.exe.start()
 
+    def process_360low(self, rec, no_of_threads):
+        """
+        
+        Parameters
+        ----------
+        no_of_threads: int
+            No of Threads to run
+        """
+        execution_file = utils.get_commands_file(self.output_dir, '360low', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
+
     def stitch_360(self, rec, no_of_threads):
         """
         

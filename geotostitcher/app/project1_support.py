@@ -13,6 +13,7 @@
 #    Jul 22, 2023 11:40:59 PM +0545  platform: Linux
 #    Jul 23, 2023 12:17:43 AM +0545  platform: Linux
 #    Jul 23, 2023 01:25:18 AM +0545  platform: Linux
+#    Jul 23, 2023 10:51:29 AM EET  platform: Linux
 
 import sys
 import time
@@ -139,27 +140,28 @@ def start_process_pgf(*args):
     print("Finish PGF")
 
 def start_stitch_360(*args):
-    print('project1_support.start_stitch_360')
-    global stitcher, _w1, root
-    threads = int(_w1.stitch_360_threads.get())
+    print('Unavailable Now')
 
-    recordings = stitcher.recs
+    # global stitcher, _w1, root
+    # threads = int(_w1.stitch_360_threads.get())
 
-    for rec in recordings:
-        _w1.stitch_360_rec['text'] = rec
-        stitcher.stitch_360(rec, threads)
-        total = stitcher.exe.total_commands
+    # recordings = stitcher.recs
+
+    # for rec in recordings:
+    #     _w1.stitch_360_rec['text'] = rec
+    #     stitcher.stitch_360(rec, threads)
+    #     total = stitcher.exe.total_commands
     
-        done = False
-        while not done:
-            percent, count, done = stitcher.exe.get_progress()
-            _w1.stitch_360['value'] = percent
-            _w1.stitch_360_status['text'] = f"{count}/{total}"
-            root.update_idletasks()
-            root.update()
-            time.sleep(0.05)
+    #     done = False
+    #     while not done:
+    #         percent, count, done = stitcher.exe.get_progress()
+    #         _w1.stitch_360['value'] = percent
+    #         _w1.stitch_360_status['text'] = f"{count}/{total}"
+    #         root.update_idletasks()
+    #         root.update()
+    #         time.sleep(0.05)
     
-    print("Finish Stitch 360")
+    # print("Finish Stitch 360")
 
 def select_all_rec(*args):
     print('project1_support.select_all_rec')
@@ -182,7 +184,6 @@ def close_select_rec(*args):
     stitcher.update_recs_to_execute(stitcher.recs)
 
     _top2.destroy()
-
 
 def add_proj_as_radio(holder, prj_all):
     # global list_of_prj_radio_btn, list_of_prj_radio_var
@@ -276,8 +277,8 @@ def generate_pts(*args):
     for rec in recordings:
         stitcher.generate_pts(rec, template_path)
 
-def generate_ptsstart_stitch_360low(*args):
-    print('project1_support.generate_ptsstart_stitch_360high')
+def start_stitch_360low(*args):
+    print('Process 360low ...')
 
     recordings = stitcher.recs
 
@@ -345,6 +346,33 @@ def close_select_prj(*args):
     _w1.project_name['text'] = stitcher.project_name
 
     _top3.destroy()
+
+def start_stitch_360low(*args):
+    print('Processing 360low ...')
+    global stitcher, _w1, root
+    threads = int(_w1.stitch_360low_threads.get())
+
+    print(threads)
+
+    recordings = stitcher.recs
+
+    for rec in recordings:
+        _w1.stitch_360low_rec['text'] = rec
+        stitcher.process_360low(rec, threads)
+        total = stitcher.exe.total_commands
+
+    
+        done = False
+        while not done:
+            percent, count, done = stitcher.exe.get_progress()
+            _w1.process_stitch_360low['value'] = percent
+            _w1.stitch_360low_status['text'] = f"{count}/{total}"
+            root.update_idletasks()
+            root.update()
+            time.sleep(0.05)
+    
+    print("Finish 360low")
+
 
 if __name__ == '__main__':
     project1.start_up()

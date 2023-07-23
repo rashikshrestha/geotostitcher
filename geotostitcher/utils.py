@@ -484,6 +484,8 @@ def generate_360low_commands(output_dir, r):
 
     f.close()
 
+    print(f"Generate 360low commands completed for rec {r}")
+
     return 1
 
 def generate_360low_commands_all(output_dir, recs):
