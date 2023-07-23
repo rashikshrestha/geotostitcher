@@ -52,7 +52,7 @@ class Stitcher():
         print(f"Output dirs status = {out_dir_ok}")
 
         #! Generate filetred images list
-        # utils.generate_filtered_images_list_forall(self.input_dir, self.output_dir, self.r_and_c)
+        utils.generate_filtered_images_list_forall(self.input_dir, self.output_dir, self.r_and_c)
 
         #! Generate pgf to jpg commands
         utils.generate_pgftojpg_commands_all(self.input_dir, self.output_dir, self.r_and_c)
