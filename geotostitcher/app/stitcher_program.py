@@ -5,7 +5,7 @@ import time
 
 class Stitcher():
     def __init__(self) -> None:
-        self.main_dir = f"/home/leon/rashik/s17"
+        self.main_dir = f"/home/leon/rashik/s16"
         self.input_dir = None
         self.output_dir = None
         self.config_file = None
@@ -13,6 +13,7 @@ class Stitcher():
         self.rec_num = None
         self.exe = Executer()
         self.recs = None
+
 
     def get_projects(self):
         self.prj_all = utils.list_prj(self.main_dir)
@@ -65,6 +66,9 @@ class Stitcher():
 
         #! Generate Stitch 360low commands
         utils.generate_360low_commands_all(self.output_dir, self.recs)
+
+        #! Generate Upload commands
+        utils.generate_upload_commands_all(self.output_dir, self.recs, self.project_name)
 
     def process_pgf(self, rec, no_of_threads):
         """
@@ -121,7 +125,7 @@ class Stitcher():
         """
         utils.generate_pts_files(self.output_dir, rec, template_path)
 
-    def stitch_360low(self, rec):
+    def stitch_360high(self, rec):
         """
         Stitch 360 low using PTGui
         """
@@ -132,7 +136,7 @@ class Stitcher():
 
         time.sleep(1)
 
-    def get_stitch_360low_status(self):
+    def get_stitch_360high_status(self):
         """
         Check PTGui Status
         """
@@ -144,3 +148,28 @@ class Stitcher():
             return True
         else:
             return False
+
+
+    def upload_pgf(self, rec, no_of_threads):
+        execution_file = utils.get_commands_file(self.output_dir, 'uploadpgf', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
+        print(f"Started Upload PGF cams for rec {rec}. Please Wait ...")
+
+    def upload_jpg(self, rec, no_of_threads):
+        execution_file = utils.get_commands_file(self.output_dir, 'uploadjpg', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
+        print(f"Started Upload JPG cams for rec {rec}. Please Wait ...")
+
+    def upload_360high(self, rec, no_of_threads):
+        execution_file = utils.get_commands_file(self.output_dir, 'upload360high', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
+        print(f"Started Upload 360high for rec {rec}. Please Wait ...")
+
+    def upload_360low(self, rec, no_of_threads):
+        execution_file = utils.get_commands_file(self.output_dir, 'upload360low', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
+        print(f"Started Upload 360low for rec {rec}. Please Wait ...")

@@ -14,6 +14,11 @@
 #    Jul 23, 2023 12:17:43 AM +0545  platform: Linux
 #    Jul 23, 2023 01:25:18 AM +0545  platform: Linux
 #    Jul 23, 2023 10:51:29 AM EET  platform: Linux
+#    Jul 24, 2023 04:56:43 AM EET  platform: Linux
+#    Jul 24, 2023 05:23:23 AM EET  platform: Linux
+#    Jul 24, 2023 06:47:10 AM EET  platform: Linux
+#    Jul 24, 2023 07:23:13 AM EET  platform: Linux
+#    Jul 24, 2023 08:09:51 AM EET  platform: Linux
 
 import sys
 import time
@@ -277,23 +282,6 @@ def generate_pts(*args):
     for rec in recordings:
         stitcher.generate_pts(rec, template_path)
 
-def start_stitch_360low(*args):
-    print('Process 360low ...')
-
-    recordings = stitcher.recs
-
-    for rec in recordings:
-        stitcher.stitch_360low(rec)
-
-        done = False
-        while not done:
-            done = stitcher.get_stitch_360low_status()
-            root.update_idletasks()
-            root.update()
-            time.sleep(0.05)
-
-        print(f"Completed stitching 360high for rec {rec}")
-
 def select_project(*args):
     print("Select Project")
 
@@ -322,6 +310,11 @@ def select_recording(*args):
     _w2 = project1.select_rec(_top2)
 
     add_rec_as_radio(_w2.recordings, stitcher.recs_all)
+
+def select_s16(*args):
+    print("Select s16")
+    stitcher.main_dir = f"/home/leon/rashik/s16"
+    print(f"Main dir: {stitcher.main_dir}")
 
 def select_s17(*args):
     print("Select s17")
@@ -352,7 +345,7 @@ def start_stitch_360low(*args):
     global stitcher, _w1, root
     threads = int(_w1.stitch_360low_threads.get())
 
-    print(threads)
+    # print(threads)
 
     recordings = stitcher.recs
 
@@ -371,7 +364,45 @@ def start_stitch_360low(*args):
             root.update()
             time.sleep(0.05)
     
-    print("Finish 360low")
+    print("Finish processing 360low")
+
+def start_stitch_360high(*args):
+    print('Stitching 360high ...')
+
+    recordings = stitcher.recs
+
+    for rec in recordings:
+        stitcher.stitch_360high(rec)
+
+        done = False
+        while not done:
+            done = stitcher.get_stitch_360high_status()
+            root.update_idletasks()
+            root.update()
+            time.sleep(0.05)
+
+        print(f"Completed stitching 360high for rec {rec}")
+
+def upload_pgf(*args):
+    recordings = stitcher.recs
+    for rec in recordings:
+        stitcher.upload_pgf(rec, 8)
+
+def upload_jpg(*args):
+    recordings = stitcher.recs
+    for rec in recordings:
+        stitcher.upload_jpg(rec, 6)
+
+def upload_360high(*args):
+    recordings = stitcher.recs
+    for rec in recordings:
+        stitcher.upload_360high(rec, 1)
+
+def upload_360low(*args):
+    recordings = stitcher.recs
+    for rec in recordings:
+        stitcher.upload_360low(rec, 1)
+
 
 
 if __name__ == '__main__':

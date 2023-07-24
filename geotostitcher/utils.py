@@ -69,6 +69,8 @@ def get_cameras(input_dir, rec):
     input_dir = f"{input_dir}/images/{rec}"
     cams = [ name for name in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, name)) ]
     cams.sort()
+    if 'dump' in cams:
+        cams.remove('dump')
     # cams = os.listdir(f"{input_dir}/images/{rec}")
     return cams
 
@@ -459,6 +461,13 @@ def generate_stitch_commands(output_dir, r, cfg_file):
 
     return 1
 
+def generate_stitch_commands_all(output_dir, recs, cfg_file):
+    """
+    Generate stitch commands for all recordings
+    """
+    for r in recs:
+        generate_stitch_commands(output_dir, r, cfg_file)
+
 def generate_360low_commands(output_dir, r):
     """
     Generate 360low commands for a recording
@@ -496,12 +505,46 @@ def generate_360low_commands_all(output_dir, recs):
         generate_360low_commands(output_dir, r)
 
 
-def generate_stitch_commands_all(output_dir, recs, cfg_file):
+def generate_upload_commands(output_dir, r, prj_name):
     """
-    Generate stitch commands for all recordings
+    Generate Upload PGF commands for a recording
+        aws s3 sync 101/360high/  s3://geoto-projects/test-repentigny-2023-k1-8/images/101/360high/
+    """
+    names = ['uploadpgf', 'uploadjpg', 'upload360high', 'upload360low']
+    pgfcams = ['00','01','02','03','04','05','06','07']
+    jpgcams = ['08', '09', '10', '11', '12', '13']
+    highs = ['360high']
+    lows = ['360low']
+    all_cams = [pgfcams, jpgcams, highs, lows]
+
+    for i in range(4):
+        name = names[i]
+        cam_list = all_cams[i]
+        print(name, cam_list)
+
+        output_filepath = f"{output_dir}/intermediate/{name}_{r}.txt"
+        f = open(output_filepath, "w")
+
+        for c in all_cams[i]:
+            command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-prod/{prj_name}/images/{r}/{c}/"
+            f.write(command)
+            f.write('\n')
+
+        f.close()
+
+    print(f"Generate Upload commands completed for rec {r}")
+
+    return 1
+
+def generate_upload_commands_all(output_dir, recs, prj_name):
+    """
+    Generate Upload PGF commands for all recordings
     """
     for r in recs:
-        generate_stitch_commands(output_dir, r, cfg_file)
+        generate_upload_commands(output_dir, r, prj_name)
+
+
+
 
 
 def get_commands_file(output_dir, command, rec):
@@ -604,7 +647,7 @@ def generate_pts_files(output_dir, r, template_path):
                 else:
                     f.write(line)
 
-        print(f"Generated pts file for sequence {s} of recording {r}")
+        # print(f"Generated pts file for sequence {s} of recording {r}")
 
     generate_batch_files(output_dir, r)
 
