@@ -1,6 +1,7 @@
 import geotostitcher.utils as utils
 from geotostitcher.executer import Executer
 import subprocess
+import os
 import time
 
 class Stitcher():
@@ -130,8 +131,9 @@ class Stitcher():
         Stitch 360 low using PTGui
         """
         #! Start PTGui
-        command = f"/opt/ptgui/PTGui -x {self.output_dir}/intermediate/pts/{rec}_batch.ptgbatch"
-        process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+        command = f"/opt/ptgui/PTGui -stitchnogui {self.output_dir}/intermediate/pts/{rec}_batch.ptgbatch"
+        os.system(command)
+        # process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
         # output, error = process.communicate()
 
         time.sleep(1)

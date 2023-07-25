@@ -313,17 +313,17 @@ def select_recording(*args):
 
 def select_s16(*args):
     print("Select s16")
-    stitcher.main_dir = f"/home/leon/rashik/s16"
+    stitcher.main_dir = f"/home/leon/rashik/s16/360_process"
     print(f"Main dir: {stitcher.main_dir}")
 
 def select_s17(*args):
     print("Select s17")
-    stitcher.main_dir = f"/home/leon/rashik/s17"
+    stitcher.main_dir = f"/home/leon/rashik/s17/360_process"
     print(f"Main dir: {stitcher.main_dir}")
 
 def select_s18(*args):
     print("Select s18")
-    stitcher.main_dir = f"/home/leon/rashik/s18"
+    stitcher.main_dir = f"/home/leon/rashik/s18/360_process"
     print(f"Main dir: {stitcher.main_dir}")
 
 def close_select_prj(*args):
