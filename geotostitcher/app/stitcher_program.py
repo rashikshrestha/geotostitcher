@@ -6,7 +6,7 @@ import time
 
 class Stitcher():
     def __init__(self) -> None:
-        self.main_dir = f"/home/leon/rashik/s16"
+        self.main_dir = f"/home/leon/rashik/s16/360_process"
         self.input_dir = None
         self.output_dir = None
         self.config_file = None
