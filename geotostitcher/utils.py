@@ -277,7 +277,17 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
     top_cams = ['00','01','02','03','04','05','06','07']
     bottom_cams = ['08', '09', '10', '11', '12', '13']
 
+    unav_cams = []
+    for tc in top_cams:
+        if not os.path.isdir(f"{input_dir}/images/{rec}/{tc}"):
+            unav_cams.append(tc)
+
+    for uc in unav_cams:
+        top_cams.remove(uc)
+
+    print(f"{len(img_seq_from_poses)} seq available in poses file.")
     #! Check if the file correspondig to given seq number exists in the expected directories:
+    good_seq_count = 0
     for seq in tqdm(img_seq_from_poses):
         seq_good = True
 
@@ -298,10 +308,12 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
                 break
                 
         if seq_good:
+            good_seq_count += 1
             f.write(seq)
             f.write('\n')
 
     f.close()
+    print(f"Among which, {good_seq_count} are good ones!")
     print(f"Filter Images completed for rec {rec}")
 
 
@@ -365,6 +377,15 @@ def generate_pgftojpg_commands(input_dir, output_dir, r, c):
 
     #TODO Scan and prepare the list of cameras which has PGF images
     cam_pgf = ['00', '01', '02', '03', '04', '05', '06', '07']
+
+    unav_cams = []
+    for tc in cam_pgf:
+        if not os.path.isdir(f"{input_dir}/images/{r}/{tc}"):
+            unav_cams.append(tc)
+
+    for uc in unav_cams:
+        cam_pgf.remove(uc)
+
 
     #! Open file to store the commands
     output_filepath = f"{output_dir}/intermediate/pgf2jpg_{r}.txt"
@@ -515,6 +536,15 @@ def generate_upload_commands(output_dir, r, prj_name):
     jpgcams = ['08', '09', '10', '11', '12', '13']
     highs = ['360high']
     lows = ['360low']
+
+    unav_cams = []
+    for tc in pgfcams:
+        if not os.path.isdir(f"{output_dir}/images/{r}/{tc}"):
+            unav_cams.append(tc)
+
+    for uc in unav_cams:
+        pgfcams.remove(uc)
+
     all_cams = [pgfcams, jpgcams, highs, lows]
 
     for i in range(4):
