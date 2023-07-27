@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Replace "your_directory_path" with the path of the directory you want to analyze
+directory_path=$1
+
+# Check if the directory exists
+if [ ! -d "$directory_path" ]; then
+  echo "Directory not found: $directory_path"
+  exit 1
+fi
+
+# Loop through each subdirectory and count the number of files
+for dir in "$directory_path"/*; do
+  if [ -d "$dir" ]; then
+    # num_files=$(find "$dir" -maxdepth 1 -type f | wc -l)
+    num_files=$(ls $dir | wc -l)
+    echo "Directory: $(basename "$dir") - Number of Files: $num_files"
+  fi
+done
