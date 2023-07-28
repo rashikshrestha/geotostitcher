@@ -383,10 +383,19 @@ def start_stitch_360high(*args):
 
         print(f"Completed stitching 360high for rec {rec}")
 
+def count_avail_pgf_cams(avail_cams):
+    total_pgf_cams = ['00', '01', '02', '03', '04', '05', '06', '07']
+    count = 0
+    for c in total_pgf_cams:
+        if c in avail_cams:
+            count += 1
+    return count
+
 def upload_pgf(*args):
     recordings = stitcher.recs
     for rec in recordings:
-        stitcher.upload_pgf(rec, 8)
+        no_of_cams = count_avail_pgf_cams(stitcher.r_and_c[rec])
+        stitcher.upload_pgf(rec, no_of_cams)
 
 def upload_jpg(*args):
     recordings = stitcher.recs
