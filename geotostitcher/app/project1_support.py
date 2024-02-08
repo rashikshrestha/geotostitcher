@@ -19,6 +19,7 @@
 #    Jul 24, 2023 06:47:10 AM EET  platform: Linux
 #    Jul 24, 2023 07:23:13 AM EET  platform: Linux
 #    Jul 24, 2023 08:09:51 AM EET  platform: Linux
+#    Feb 05, 2024 08:39:24 AM +0545  platform: Linux
 
 import sys
 import time
@@ -326,6 +327,18 @@ def select_s18(*args):
     stitcher.main_dir = f"/home/leon/rashik/s18/360_process"
     print(f"Main dir: {stitcher.main_dir}")
 
+def select_s17e(*args):
+    print("Select s17e")
+    stitcher.main_dir = f"/home/leon/rashik/s17e/360_process"
+    print(f"Main dir: {stitcher.main_dir}")
+
+def select_s18g(*args):
+    print("Select s18g")
+    stitcher.main_dir = f"/home/leon/rashik/s18g/360_process"
+    print(f"Main dir: {stitcher.main_dir}")
+
+
+
 def close_select_prj(*args):
     global _top3, prj_var, stitcher, _w1
 
@@ -411,8 +424,6 @@ def upload_360low(*args):
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.upload_360low(rec, 1)
-
-
 
 if __name__ == '__main__':
     project1.start_up()
