@@ -124,7 +124,7 @@ def build_output_dirs(rec_and_cams, output_dir):
             cam_dir.mkdir(parents=True, exist_ok=True)
 
         #! Build dirs for 360low and 360high
-        dir360low = Path(output_dir+'/images/'+r+'/360low')
+        dir360low = Path(output_dir+'/images/'+r+'/360tiles')
         dir360low.mkdir(parents=True, exist_ok=True)
 
         dir360high = Path(output_dir+'/images/'+r+'/360high')
@@ -174,7 +174,7 @@ def verify_output_dirs(rec_and_cams, output_dir):
             success = check_dir(cam_dir) and success
 
         #! Check dirs for 360 and 360low
-        dir360 = Path(output_dir+'/images/'+r+'/360low')
+        dir360 = Path(output_dir+'/images/'+r+'/360tiles')
         success = check_dir(dir360) and success
         dir360low = Path(output_dir+'/images/'+r+'/360high')
         success = check_dir(dir360low) and success
@@ -508,7 +508,8 @@ def generate_360low_commands(output_dir, r):
     f = open(output_filepath, "w")
 
     for s in seq:
-        command = f"convert -quality 27 {output_dir}/images/{r}/360high/image.{s}.jpg {output_dir}/images/{r}/360low/image.{s}.jpg"
+        # command = f"convert -quality 27 {output_dir}/images/{r}/360high/image.{s}.jpg {output_dir}/images/{r}/360low/image.{s}.jpg"
+        command = f"python3 /home/leon/rashik/geotostitcher/geotostitcher/tiler.py {output_dir}/images/{r}/360high/image.{s}.jpg"
         f.write(command)
         f.write('\n')
 
@@ -535,7 +536,7 @@ def generate_upload_commands(output_dir, r, prj_name):
     pgfcams = ['00','01','02','03','04','05','06','07']
     jpgcams = ['08', '09', '10', '11', '12', '13']
     highs = ['360high']
-    lows = ['360low']
+    lows = ['360tiles']
 
     unav_cams = []
     for tc in pgfcams:
