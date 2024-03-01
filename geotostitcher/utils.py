@@ -729,36 +729,55 @@ def generate_pts_files(output_dir, r, template_path):
         with open(template_path, "r") as file:
             for line_number, line in enumerate(file, start=1):  
 
-                #! For each line in template:
-                if word in line:
-                    # print(f"Word '{word}' found on line {line_number}")
-                    splits = line.split('$$$')
-                    new_line_list = []
-                    #! For each word in the line:
-                    for w in splits:
-                        if w == 'output_file_path':
-                            w = f"{output_dir}/images/{r}/360high/image.{s}.jpg"
-                        elif w == 'output_jpg_quality':
-                            w = '70' #TODO Get jpg quality from some config or as parameters
-                        elif w.startswith('image_from_camera'):
-                            # print(w.split('_'))
-                            # input()
-                            camera = w.split('_')[-1]
-                            # print(camera)
-                            # input()
-                            w = f"{output_dir}/images/{r}/{camera}_blur/image.{s}.jpg"
-                            # print(w)
-                            # input()
+                # #! For each line in template:
+                # if word in line:
+                #     # print(f"Word '{word}' found on line {line_number}")
+                #     splits = line.split('$$$')
+                #     new_line_list = []
+                #     #! For each word in the line:
+                #     for w in splits:
+                #         if w == 'output_file_path':
+                #             w = f"{output_dir}/images/{r}/360high/image.{s}.jpg"
+                #         elif w == 'output_jpg_quality':
+                #             w = '70' #TODO Get jpg quality from some config or as parameters
+                #         elif w.startswith('image_from_camera'):
+                #             # print(w.split('_'))
+                #             # input()
+                #             camera = w.split('_')[-1]
+                #             # print(camera)
+                #             # input()
+                #             w = f"{output_dir}/images/{r}/{camera}_blur/image.{s}.jpg"
+                #             # print(w)
+                #             # input()
 
-                        new_line_list.append(w)
+                #         new_line_list.append(w)
 
+                    # new_line = ''.join(new_line_list)
 
-                    new_line = ''.join(new_line_list)
+                    # f.write(new_line)
 
-                    f.write(new_line)
+                # else:
+                    # f.write(line)
 
+                if '08.jpg' in line:
+                    line = line.replace('08.jpg', f"{output_dir}/images/{r}/08_blur/image.{s}.jpg")
+                elif '09.jpg' in line:
+                    line = line.replace('09.jpg', f"{output_dir}/images/{r}/09_blur/image.{s}.jpg")
+                elif '10.jpg' in line:
+                    line = line.replace('10.jpg', f"{output_dir}/images/{r}/10_blur/image.{s}.jpg")
+                elif '11.jpg' in line:
+                    line = line.replace('11.jpg', f"{output_dir}/images/{r}/11_blur/image.{s}.jpg")
+                elif '12.jpg' in line:
+                    line = line.replace('12.jpg', f"{output_dir}/images/{r}/12_blur/image.{s}.jpg")
+                elif '13.jpg' in line:
+                    line = line.replace('13.jpg', f"{output_dir}/images/{r}/13_blur/image.{s}.jpg")
+                elif '360high.jpg' in line:
+                    line = line.replace('360high.jpg', f"{output_dir}/images/{r}/360high/image.{s}.jpg")
                 else:
-                    f.write(line)
+                    line = line
+
+                f.write(line)
+                
 
         # print(f"Generated pts file for sequence {s} of recording {r}")
 
