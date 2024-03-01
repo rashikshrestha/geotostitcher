@@ -123,6 +123,12 @@ def build_output_dirs(rec_and_cams, output_dir):
             cam_dir = Path(output_dir+'/images/'+r+'/'+c)
             cam_dir.mkdir(parents=True, exist_ok=True)
 
+        #! Build Blur cam directories
+        jpgcamsblur = ['08_blur', '09_blur', '10_blur', '11_blur', '12_blur', '13_blur']
+        for c in jpgcamsblur:
+            cam_dir = Path(output_dir+'/images/'+r+'/'+c)
+            cam_dir.mkdir(parents=True, exist_ok=True)
+
         #! Build dirs for 360low and 360high
         dir360low = Path(output_dir+'/images/'+r+'/360tiles')
         dir360low.mkdir(parents=True, exist_ok=True)
@@ -170,6 +176,12 @@ def verify_output_dirs(rec_and_cams, output_dir):
     for r,cams in rec_and_cams.items():
         #! Check dir for each camera
         for c in cams:
+            cam_dir = Path(output_dir+'/images/'+r+'/'+c)
+            success = check_dir(cam_dir) and success
+
+        #! Check blur dir
+        jpgcamsblur = ['08_blur', '09_blur', '10_blur', '11_blur', '12_blur', '13_blur']
+        for c in jpgcamsblur:
             cam_dir = Path(output_dir+'/images/'+r+'/'+c)
             success = check_dir(cam_dir) and success
 
