@@ -39,7 +39,7 @@ def _style_code():
                 os.path.join(_location, 'themes', 'page-legacy.tcl'))
     except: pass
     style = ttk.Style()
-    style.theme_use('page-legacy')
+#     style.theme_use('page-legacy')
     style.configure('.', font = "TkDefaultFont")
     project1_support.root.tk_setPalette(
             foreground = '#000000',
