@@ -532,9 +532,9 @@ def generate_upload_commands(output_dir, r, prj_name):
     Generate Upload PGF commands for a recording
         aws s3 sync 101/360high/  s3://geoto-projects/test-repentigny-2023-k1-8/images/101/360high/
     """
-    names = ['uploadpgf', 'uploadjpg', 'upload360high', 'upload360low']
     pgfcams = ['00','01','02','03','04','05','06','07']
     jpgcams = ['08', '09', '10', '11', '12', '13']
+    jpgcamsblur = ['08_blur', '09_blur', '10_blur', '11_blur', '12_blur', '13_blur']
     highs = ['360high']
     lows = ['360tiles']
 
@@ -546,7 +546,8 @@ def generate_upload_commands(output_dir, r, prj_name):
     for uc in unav_cams:
         pgfcams.remove(uc)
 
-    all_cams = [pgfcams, jpgcams, highs, lows]
+    names = ['uploadpgf', 'uploadjpg', 'uploadjpgblur', 'upload360high', 'upload360low']
+    all_cams = [pgfcams, jpgcams, jpgcamsblur, highs, lows]
 
     for i in range(4):
         name = names[i]
@@ -557,7 +558,13 @@ def generate_upload_commands(output_dir, r, prj_name):
         f = open(output_filepath, "w")
 
         for c in all_cams[i]:
-            command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-prod/{prj_name}/images/{r}/{c}/"
+            if c in jpgcams:
+                command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-recon/{prj_name}/images/{r}/{c}/"
+            elif c in jpgcamsblur:
+                command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-prod/{prj_name}/images/{r}/{c[:-5]}/"
+            else:
+                command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-prod/{prj_name}/images/{r}/{c}/"
+
             f.write(command)
             f.write('\n')
 
