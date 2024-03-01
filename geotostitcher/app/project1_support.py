@@ -20,6 +20,7 @@
 #    Jul 24, 2023 07:23:13 AM EET  platform: Linux
 #    Jul 24, 2023 08:09:51 AM EET  platform: Linux
 #    Feb 05, 2024 08:39:24 AM +0545  platform: Linux
+#    Mar 01, 2024 07:30:42 AM +0545  platform: Linux
 
 import sys
 import time
@@ -337,8 +338,6 @@ def select_s18g(*args):
     stitcher.main_dir = f"/home/leon/rashik/s18g/360_process"
     print(f"Main dir: {stitcher.main_dir}")
 
-
-
 def close_select_prj(*args):
     global _top3, prj_var, stitcher, _w1
 
@@ -424,6 +423,27 @@ def upload_360low(*args):
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.upload_360low(rec, 1)
+
+def download_recon(*args):
+    if _debug:
+        print('project1_support.download_recon')
+        for arg in args:
+            print ('    another arg:', arg)
+        sys.stdout.flush()
+
+def start_blurring(*args):
+    if _debug:
+        print('project1_support.start_blurring')
+        for arg in args:
+            print ('    another arg:', arg)
+        sys.stdout.flush()
+
+def upload_jpgblur(*args):
+    if _debug:
+        print('project1_support.upload_jpgblur')
+        for arg in args:
+            print ('    another arg:', arg)
+        sys.stdout.flush()
 
 if __name__ == '__main__':
     project1.start_up()
