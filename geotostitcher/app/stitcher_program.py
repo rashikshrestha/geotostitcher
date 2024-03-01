@@ -74,6 +74,9 @@ class Stitcher():
         #! Generate Download Recon commands
         utils.generate_download_recon_commands_all(self.output_dir, self.recs, self.project_name)
 
+        #! Generate BLurring commands
+        utils.generate_blurring_commands_all(self.output_dir, self.recs)
+
 
     def process_pgf(self, rec, no_of_threads):
         """
@@ -191,3 +194,9 @@ class Stitcher():
         self.exe.prepare_execution(execution_file, no_of_threads)
         self.exe.start()
         print(f"Started Download Recon for rec {rec}. Please Wait ...")
+
+    def blurring(self, rec, no_of_threads):
+        execution_file = utils.get_commands_file(self.output_dir, 'blurring', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
+        print(f"Started Blurring for rec {rec}. Please Wait ...")

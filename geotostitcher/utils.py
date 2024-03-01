@@ -618,6 +618,48 @@ def generate_download_recon_commands_all(output_dir, recs, prj_name):
         generate_download_recon_commands(output_dir, r, prj_name)
 
 
+def generate_blurring_commands(output_dir, r):
+    """
+    Generate Blurring commands for a recording
+    """
+    #! Get the seq from filtred_{rec}.txt file
+    filtered_filepath = f"{output_dir}/intermediate/filtered_{r}.txt"
+    if not Path(filtered_filepath).exists():
+        print(filtered_filepath, "doesn't exists") 
+        return 0
+    else:
+        seq = get_list_from_filtered_images_file(filtered_filepath)
+
+    #TODO Scan and prepare the list of cameras which has JPG images
+    cam_jpg = ['08', '09', '10', '11', '12', '13']
+
+    #! Open file to store the commands
+    output_filepath = f"{output_dir}/intermediate/blurring_{r}.txt"
+    f = open(output_filepath, "w")
+
+    #! For each camera with pgf images:
+    for c_jpg in cam_jpg:
+        for s in seq:
+            cmd = f"mv {output_dir}/images/{r}/{c_jpg}/image.{s}.jpg {output_dir}/images/{r}/{c_jpg}_blur/image.{s}.jpg"
+            f.write(cmd)
+            f.write('\n')
+
+    #! Close the file
+    f.close()
+
+    print(f"Generate Blurring commands completed for rec {r}")
+
+    return 1
+
+
+def generate_blurring_commands_all(output_dir, recs):
+    """
+    Generate Blurring commands for all recordings
+    """
+    for r in recs:
+        generate_blurring_commands(output_dir, r)
+
+
 def get_commands_file(output_dir, command, rec):
     """
     Get particular command file path of given rec

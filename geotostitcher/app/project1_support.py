@@ -435,11 +435,28 @@ def download_recon(*args):
         stitcher.download_recon(rec, 1)
 
 def start_blurring(*args):
-    if _debug:
-        print('project1_support.start_blurring')
-        for arg in args:
-            print ('    another arg:', arg)
-        sys.stdout.flush()
+    print('Blurring ...')
+    global stitcher, _w1, root
+    threads = int(_w1.blur_threads.get())
+
+    recordings = stitcher.recs
+
+    for rec in recordings:
+        _w1.blurring_rec['text'] = rec
+        stitcher.blurring(rec, threads)
+        total = stitcher.exe.total_commands
+    
+        done = False
+        while not done:
+            percent, count, done = stitcher.exe.get_progress()
+            _w1.blurring['value'] = percent
+            _w1.blurring_status['text'] = f"{count}/{total}"
+            root.update_idletasks()
+            root.update()
+            time.sleep(0.05)
+    
+    print("Finish Blurring")
+
 
 if __name__ == '__main__':
     project1.start_up()
