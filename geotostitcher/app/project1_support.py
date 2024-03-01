@@ -430,11 +430,9 @@ def upload_360low(*args):
         stitcher.upload_360low(rec, 1)
 
 def download_recon(*args):
-    if _debug:
-        print('project1_support.download_recon')
-        for arg in args:
-            print ('    another arg:', arg)
-        sys.stdout.flush()
+    recordings = stitcher.recs
+    for rec in recordings:
+        stitcher.download_recon(rec, 1)
 
 def start_blurring(*args):
     if _debug:

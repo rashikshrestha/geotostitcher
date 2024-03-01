@@ -71,6 +71,10 @@ class Stitcher():
         #! Generate Upload commands
         utils.generate_upload_commands_all(self.output_dir, self.recs, self.project_name)
 
+        #! Generate Download Recon commands
+        utils.generate_download_recon_commands_all(self.output_dir, self.recs, self.project_name)
+
+
     def process_pgf(self, rec, no_of_threads):
         """
         
@@ -181,3 +185,9 @@ class Stitcher():
         self.exe.prepare_execution(execution_file, no_of_threads)
         self.exe.start()
         print(f"Started Upload 360low for rec {rec}. Please Wait ...")
+
+    def download_recon(self, rec, no_of_threads):
+        execution_file = utils.get_commands_file(self.output_dir, 'download_recon', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
+        print(f"Started Download Recon for rec {rec}. Please Wait ...")

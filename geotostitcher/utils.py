@@ -594,7 +594,28 @@ def generate_upload_commands_all(output_dir, recs, prj_name):
         generate_upload_commands(output_dir, r, prj_name)
 
 
+def generate_download_recon_commands(output_dir, r, prj_name):
+    """
+    Generate Download Recon commands for a recording
+        aws s3 cp s3://geoto-projects-prod/{prj_name}/ptgui/{r}/recon.csv {output_dir}/recon.csv
+    """
+    output_filepath = f"{output_dir}/intermediate/download_recon_{r}.txt"
+    f = open(output_filepath, "w")
+    command = f"aws s3 cp s3://geoto-projects-prod/{prj_name}/ptgui/{r}/{r}recon.csv {output_dir}/intermediate/recon_{r}.csv"
+    f.write(command)
+    f.write('\n')
+    f.close()
 
+    print(f"Generate Download Recon commands completed for rec {r}")
+
+    return 1
+
+def generate_download_recon_commands_all(output_dir, recs, prj_name):
+    """
+    Generate Download Recon commands for all recordings
+    """
+    for r in recs:
+        generate_download_recon_commands(output_dir, r, prj_name)
 
 
 def get_commands_file(output_dir, command, rec):
