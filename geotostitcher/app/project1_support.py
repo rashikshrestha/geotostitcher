@@ -414,6 +414,11 @@ def upload_jpg(*args):
     for rec in recordings:
         stitcher.upload_jpg(rec, 6)
 
+def upload_jpgblur(*args):
+    recordings = stitcher.recs
+    for rec in recordings:
+        stitcher.upload_jpgblur(rec, 6)
+
 def upload_360high(*args):
     recordings = stitcher.recs
     for rec in recordings:
@@ -434,13 +439,6 @@ def download_recon(*args):
 def start_blurring(*args):
     if _debug:
         print('project1_support.start_blurring')
-        for arg in args:
-            print ('    another arg:', arg)
-        sys.stdout.flush()
-
-def upload_jpgblur(*args):
-    if _debug:
-        print('project1_support.upload_jpgblur')
         for arg in args:
             print ('    another arg:', arg)
         sys.stdout.flush()

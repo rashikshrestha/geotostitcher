@@ -164,6 +164,12 @@ class Stitcher():
         self.exe.start()
         print(f"Started Upload JPG cams for rec {rec}. Please Wait ...")
 
+    def upload_jpgblur(self, rec, no_of_threads):
+        execution_file = utils.get_commands_file(self.output_dir, 'uploadjpgblur', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
+        print(f"Started Upload JPG Blur cams for rec {rec}. Please Wait ...")
+
     def upload_360high(self, rec, no_of_threads):
         execution_file = utils.get_commands_file(self.output_dir, 'upload360high', rec)
         self.exe.prepare_execution(execution_file, no_of_threads)
