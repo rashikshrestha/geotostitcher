@@ -21,6 +21,8 @@
 #    Jul 24, 2023 08:09:51 AM EET  platform: Linux
 #    Feb 05, 2024 08:39:24 AM +0545  platform: Linux
 #    Mar 01, 2024 07:30:42 AM +0545  platform: Linux
+#    Mar 01, 2024 11:36:33 AM +0545  platform: Linux
+#    Mar 01, 2024 12:14:24 PM +0545  platform: Linux
 
 import sys
 import time
@@ -457,6 +459,14 @@ def start_blurring(*args):
     
     print("Finish Blurring")
 
+def upload_pts(*args):
+    print('project1_support.upload_pts')
+
+def select_template_big(*args):
+    print('project1_support.select_template_big')
+    global stitcher, _w1
+    file_path = filedialog.askopenfilename()
+    _w1.pts_template_big.insert(0, file_path)
 
 if __name__ == '__main__':
     project1.start_up()
