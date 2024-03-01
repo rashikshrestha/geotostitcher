@@ -746,7 +746,7 @@ def generate_pts_files(output_dir, r, template_path):
                             camera = w.split('_')[-1]
                             # print(camera)
                             # input()
-                            w = f"{output_dir}/images/{r}/{camera}/image.{s}.jpg"
+                            w = f"{output_dir}/images/{r}/{camera}_blur/image.{s}.jpg"
                             # print(w)
                             # input()
 
