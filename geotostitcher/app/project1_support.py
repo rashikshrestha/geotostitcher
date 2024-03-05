@@ -45,7 +45,7 @@ def main(*args):
     _top1 = root
     _w1 = project1.geoto_stitcher(_top1)
 
-    _w1.pts_template.insert(0, '/home/leon/rashik/pts_templates/kona2-12mp.pts')
+    # _w1.pts_template.insert(0, '/home/leon/rashik/pts_templates/kona2-12mp.pts')
 
     # Backbone
     global stitcher
@@ -225,6 +225,8 @@ def add_proj_as_radio(holder, prj_all):
 
 def add_rec_as_radio(holder, rec_all):
     global check_var
+
+    print(f"Total {len(rec_all)} recordings available!")
 
     list_of_checks = []
 
@@ -459,8 +461,34 @@ def start_blurring(*args):
     
     print("Finish Blurring")
 
+import os
+
 def upload_pts(*args):
     print('project1_support.upload_pts')
+    global _w1, root
+
+    prj = _w1.project_name['text']
+    rec = _w1.rec_num['text']
+    pts_template_local = _w1.pts_template.get()
+    pts_template_big_local = _w1.pts_template_big.get()
+
+    print(prj, rec, pts_template_local, pts_template_big_local)
+
+    command1 = f"aws s3 cp {pts_template_local} s3://geoto-projects-prod/{prj}/ptgui/{rec}/template_small.pts"
+    command2 = f"aws s3 cp {pts_template_big_local} s3://geoto-projects-prod/{prj}/ptgui/{rec}/template_big.pts"
+
+    path_split = pts_template_local.split('/')[:-1]
+    path_split.append('2724_black.jpg')
+    black_path = '/'.join(path_split)
+
+    command3 = f"aws s3 cp {black_path} s3://geoto-projects-prod/{prj}/ptgui/{rec}/image.{rec}000000_0.jpg"
+
+    os.system(command1)  
+    os.system(command2)
+    os.system(command3)
+
+    print('Done uploading PTS!')
+
 
 def select_template_big(*args):
     print('project1_support.select_template_big')
