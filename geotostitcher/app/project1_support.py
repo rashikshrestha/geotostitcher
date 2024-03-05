@@ -203,12 +203,12 @@ def add_proj_as_radio(holder, prj_all):
 
     prj_var = tk.StringVar()
 
-    y = 0.225
+    y = 0.1
     for i in range(len(prj_all)):
 
         cb = tk.Radiobutton(holder)
 
-        cb.place(relx=0.018, rely=y+i*0.075, relheight=0.073, relwidth=0.593, bordermode='ignore')
+        cb.place(relx=0.018, rely=y+i*0.075, relheight=0.073, relwidth=0.7, bordermode='ignore')
         cb.configure(activebackground="beige")
         cb.configure(anchor='w')
         cb.configure(compound='left')
@@ -231,11 +231,16 @@ def add_rec_as_radio(holder, rec_all):
     list_of_checks = []
 
     check_var = tk.StringVar()
-    y = 0.225
+    y = 0.03
+    x = 0.018
+    x_skip = 0.194
+    y_skip = 0.045
     for i in range(len(rec_all)):
+        if i%20==0: y=0.03
+
         cb = tk.Radiobutton(holder)
 
-        cb.place(relx=0.018, rely=y+i*0.075, relheight=0.073
+        cb.place(relx=x+(i//20)*x_skip, rely=y, relheight=0.073
                 , relwidth=0.193, bordermode='ignore')
         cb.configure(activebackground="beige")
         cb.configure(anchor='w')
@@ -247,6 +252,8 @@ def add_rec_as_radio(holder, rec_all):
         cb.configure(variable=check_var)
 
         list_of_checks.append(cb)
+
+        y += y_skip
 
     list_of_checks[0].select()
 
