@@ -479,10 +479,14 @@ def upload_pts(*args):
     pts_template_local = _w1.pts_template.get()
     pts_template_big_local = _w1.pts_template_big.get()
 
+    # extract names
+    pts_small_name = pts_template_local.split('/')[-1]
+    pts_big_name = pts_template_big_local.split('/')[-1]
+
     print(prj, rec, pts_template_local, pts_template_big_local)
 
-    command1 = f"aws s3 cp {pts_template_local} s3://geoto-projects-prod/{prj}/ptgui/{rec}/template_small.pts"
-    command2 = f"aws s3 cp {pts_template_big_local} s3://geoto-projects-prod/{prj}/ptgui/{rec}/template_big.pts"
+    command1 = f"aws s3 cp {pts_template_local} s3://geoto-projects-prod/{prj}/ptgui/{rec}/{pts_small_name}.standard"
+    command2 = f"aws s3 cp {pts_template_big_local} s3://geoto-projects-prod/{prj}/ptgui/{rec}/{pts_big_name}"
 
     path_split = pts_template_local.split('/')[:-1]
     path_split.append('2724_black.jpg')
