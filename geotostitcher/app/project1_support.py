@@ -34,6 +34,11 @@ from tkinter.constants import *
 
 from stitcher_program import Stitcher
 import project1
+import geotostitcher.utils as utils
+from geotostitcher.generate_quality import generate_quality
+import geotostitcher.aws_utils as au
+from pathlib import Path
+
 
 def main(*args):
     '''Main entry point for the application.'''
@@ -510,29 +515,70 @@ def select_template_big(*args):
 
 def generate_quality_file(*args):
     print('Generate Quality')
-    global _w1, root, stitcher
-
-    prj = _w1.project_name['text']
-    rec = _w1.rec_num['text']
-
-    print(prj)
-    print(rec)
+    global stitcher
 
     print(stitcher.main_dir)
     print(stitcher.input_dir)
-    print(stitcher.output_dir_dir)
+    print(stitcher.output_dir)
     print(stitcher.project_name)
-    print(stitcher.rec_num)
+    rec = stitcher.recs[0]
+    print(rec)
+
+    gps_trigger_data = f"{stitcher.input_dir}/images/{rec}/gps_trigger_data.txt"
+
+    if not Path(gps_trigger_data).exists():
+        print(f"gps_trigger_data not available. Cannot generate quality")
+        return None
+
+    pfile, cfile = utils.get_final_poses_and_closest_file_for_this_rec(stitcher.input_dir, rec)
+    if pfile is None or cfile is None:
+        print(f"Cannot generate quality file")
+        return None
+
+    print(gps_trigger_data)
+    print(pfile)
+    print(cfile)
+
+    qfile = generate_quality(gps_trigger_data, cfile, pfile)
+    stitcher.quality_file = qfile
+
+    
 
     
 
 def upload_quality_file(*args):
-    print("Upload quality")
+    global stitcher
+    print("Uploading quality...")
+
+    #! Get local qfile name
+    rec = stitcher.recs[0]
+    pfile, cfile = utils.get_final_poses_and_closest_file_for_this_rec(stitcher.input_dir, rec)
+    pfile_splits = pfile.split('/')
+    pfile_path, pfile_name = pfile_splits[:-1], pfile_splits[-1]
+    qfile_name = f"{rec}.qtl"
+    pfile_path.append(qfile_name)
+    qfile = '/'.join(pfile_path)
+
+    #! Get s3 qfile name
+    poses_dirs = au.s3_ls(f"s3://geoto-projects-prod/{stitcher.project_name}/poses/")
+
+    for pd in poses_dirs:
+        splits = pd.split('__')
+        if splits[2][:3] == rec:
+            break
+
+    print(f"{pd} SELECTED")
+    
+    if splits[2][:3] != rec:
+        print("Couldn't find poses directory in s3, Upload not possible!")
+        return None
+
+    qtl_file = f"s3://geoto-projects-prod/{stitcher.project_name}/poses/{pd}/{rec}.qtl" 
+
+    #! Upload Quality file
+    print(f"-> Uploading {qfile} to {qtl_file}")
+    au.s3_upload(qfile, qtl_file)
+
 
 if __name__ == '__main__':
     project1.start_up()
-
-
-
-
-

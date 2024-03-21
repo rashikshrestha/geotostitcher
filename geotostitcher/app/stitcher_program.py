@@ -14,6 +14,7 @@ class Stitcher():
         self.rec_num = None
         self.exe = Executer()
         self.recs = None
+        self.quality_file = None
 
 
     def get_projects(self):
