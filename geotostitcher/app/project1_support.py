@@ -23,6 +23,7 @@
 #    Mar 01, 2024 07:30:42 AM +0545  platform: Linux
 #    Mar 01, 2024 11:36:33 AM +0545  platform: Linux
 #    Mar 01, 2024 12:14:24 PM +0545  platform: Linux
+#    Mar 21, 2024 07:32:26 PM +0545  platform: Linux
 
 import sys
 import time
@@ -506,6 +507,27 @@ def select_template_big(*args):
     global stitcher, _w1
     file_path = filedialog.askopenfilename()
     _w1.pts_template_big.insert(0, file_path)
+
+def generate_quality_file(*args):
+    print('Generate Quality')
+    global _w1, root, stitcher
+
+    prj = _w1.project_name['text']
+    rec = _w1.rec_num['text']
+
+    print(prj)
+    print(rec)
+
+    print(stitcher.main_dir)
+    print(stitcher.input_dir)
+    print(stitcher.output_dir_dir)
+    print(stitcher.project_name)
+    print(stitcher.rec_num)
+
+    
+
+def upload_quality_file(*args):
+    print("Upload quality")
 
 if __name__ == '__main__':
     project1.start_up()
