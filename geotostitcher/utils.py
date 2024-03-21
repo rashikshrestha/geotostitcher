@@ -222,6 +222,10 @@ def get_poses_file_path_for_this_rec(input_dir, rec):
             break
 
     splits = pd.split('__')
+    if splits[2][:3] != rec:
+        print("Couldn't find poses directory!")
+        return None
+
     poses_file_name = f"{splits[0]}_{splits[-1]}.poses"
     poses_file_path = f"{input_dir}/poses/{pd}/{poses_file_name}"
 
@@ -230,6 +234,52 @@ def get_poses_file_path_for_this_rec(input_dir, rec):
     else:
         print(f"Poses file unavailable for recording {rec}")
         return None
+
+
+def get_final_poses_and_closest_file_for_this_rec(input_dir, rec):
+    """
+    Get the path to poses file for this recording
+
+    Parameters
+    ----------
+    input_dir: str
+        Path to input directory
+    rec: str
+        Name of recording
+
+    Returns
+    -------
+    poses_file_path: str
+        Path of the poses file
+    """
+    project_name = get_project_name_from_input_dir(input_dir)
+    poses_dirs = os.listdir(f"{input_dir}/posesfinal") 
+
+    for pd in poses_dirs:
+        if pd.startswith(f"{project_name}__poses__{rec}"):
+            break
+
+    splits = pd.split('__')
+    if splits[2][:3] != rec:
+        print("Couldn't find poses directory!")
+        return None, None
+
+    poses_file_name = f"{splits[0]}_{splits[-1]}.poses"
+    poses_file_path = f"{input_dir}/posesfinal/{pd}/{poses_file_name}"
+
+    closest_file_name = f"{splits[0]}_{splits[-1]}.closest"
+    closest_file_path = f"{input_dir}/posesfinal/{pd}/{closest_file_name}"
+
+    if not Path(poses_file_path).exists():
+        print(f"Poses file unavailable for recording {rec}")
+    
+    if not Path(poses_file_path).exists():
+        print(f"Closest file unavailable for recording {rec}")
+
+    if Path(poses_file_path).exists() and Path(poses_file_path).exists(): 
+        return poses_file_path, closest_file_path
+    else:
+        return None, None
 
 
 def get_image_seq_from_poses_file(poses_file_path):
