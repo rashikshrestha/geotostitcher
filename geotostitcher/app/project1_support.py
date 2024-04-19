@@ -24,6 +24,7 @@
 #    Mar 01, 2024 11:36:33 AM +0545  platform: Linux
 #    Mar 01, 2024 12:14:24 PM +0545  platform: Linux
 #    Mar 21, 2024 07:32:26 PM +0545  platform: Linux
+#    Apr 19, 2024 02:08:58 PM +0545  platform: Linux
 
 import sys
 import time
@@ -38,7 +39,6 @@ import geotostitcher.utils as utils
 from geotostitcher.generate_quality import generate_quality
 import geotostitcher.aws_utils as au
 from pathlib import Path
-
 
 def main(*args):
     '''Main entry point for the application.'''
@@ -355,6 +355,11 @@ def select_s18g(*args):
     stitcher.main_dir = f"/home/leon/rashik/s18g/360_process"
     print(f"Main dir: {stitcher.main_dir}")
 
+def select_s21(*args):
+    print("Select s21")
+    stitcher.main_dir = f"/home/leon/rashik/s21/360_process"
+    print(f"Main dir: {stitcher.main_dir}")
+
 def close_select_prj(*args):
     global _top3, prj_var, stitcher, _w1
 
@@ -506,7 +511,6 @@ def upload_pts(*args):
 
     print('Done uploading PTS!')
 
-
 def select_template_big(*args):
     print('project1_support.select_template_big')
     global stitcher, _w1
@@ -580,5 +584,10 @@ def upload_quality_file(*args):
     au.s3_upload(qfile, qtl_file)
 
 
+
 if __name__ == '__main__':
     project1.start_up()
+
+
+
+
