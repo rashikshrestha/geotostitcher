@@ -78,6 +78,9 @@ class Stitcher():
         #! Generate BLurring commands
         utils.generate_blurring_commands_all(self.output_dir, self.recs)
 
+        #! Generate BLurring commands
+        utils.generate_cropping_commands_all(self.output_dir, self.recs)
+
 
     def process_pgf(self, rec, no_of_threads):
         """
@@ -201,3 +204,15 @@ class Stitcher():
         self.exe.prepare_execution(execution_file, no_of_threads)
         self.exe.start()
         print(f"Started Blurring for rec {rec}. Please Wait ...")
+        
+    def cropping(self, rec, no_of_threads):
+        execution_file = utils.get_commands_file(self.output_dir, 'cropping', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
+        print(f"Started Cropping for rec {rec}. Please Wait ...")
+    
+    def upload_crop(self, rec, no_of_threads):
+        execution_file = utils.get_commands_file(self.output_dir, 'uploadjpgcrop', rec)
+        self.exe.prepare_execution(execution_file, no_of_threads)
+        self.exe.start()
+        print(f"Started Upload JPG Crop for rec {rec}. Please Wait ...")

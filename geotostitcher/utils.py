@@ -124,7 +124,7 @@ def build_output_dirs(rec_and_cams, output_dir):
             cam_dir.mkdir(parents=True, exist_ok=True)
 
         #! Build Blur cam directories
-        jpgcamsblur = ['08_blur', '09_blur', '10_blur', '11_blur', '12_blur', '13_blur']
+        jpgcamsblur = ['08_blur', '09_blur', '10_blur', '11_blur', '12_blur', '13_blur', '08_crop', '09_crop', '10_crop', '11_crop', '12_crop', '13_crop']
         for c in jpgcamsblur:
             cam_dir = Path(output_dir+'/images/'+r+'/'+c)
             cam_dir.mkdir(parents=True, exist_ok=True)
@@ -180,7 +180,7 @@ def verify_output_dirs(rec_and_cams, output_dir):
             success = check_dir(cam_dir) and success
 
         #! Check blur dir
-        jpgcamsblur = ['08_blur', '09_blur', '10_blur', '11_blur', '12_blur', '13_blur']
+        jpgcamsblur = ['08_blur', '09_blur', '10_blur', '11_blur', '12_blur', '13_blur', '08_crop', '09_crop', '10_crop', '11_crop', '12_crop', '13_crop']
         for c in jpgcamsblur:
             cam_dir = Path(output_dir+'/images/'+r+'/'+c)
             success = check_dir(cam_dir) and success
@@ -597,6 +597,7 @@ def generate_upload_commands(output_dir, r, prj_name):
     pgfcams = ['00','01','02','03','04','05','06','07']
     jpgcams = ['08', '09', '10', '11', '12', '13']
     jpgcamsblur = ['08_blur', '09_blur', '10_blur', '11_blur', '12_blur', '13_blur']
+    jpgcamscrop = ['08_crop', '09_crop', '10_crop', '11_crop', '12_crop', '13_crop']
     highs = ['360high']
     lows = ['360tiles']
 
@@ -608,8 +609,8 @@ def generate_upload_commands(output_dir, r, prj_name):
     for uc in unav_cams:
         pgfcams.remove(uc)
 
-    names = ['uploadpgf', 'uploadjpg', 'uploadjpgblur', 'upload360high', 'upload360low']
-    all_cams = [pgfcams, jpgcams, jpgcamsblur, highs, lows]
+    names = ['uploadpgf', 'uploadjpg', 'uploadjpgblur', 'uploadjpgcrop', 'upload360high', 'upload360low']
+    all_cams = [pgfcams, jpgcams, jpgcamsblur, jpgcamscrop, highs, lows]
 
     for i in range(4):
         name = names[i]
@@ -621,6 +622,8 @@ def generate_upload_commands(output_dir, r, prj_name):
 
         for c in all_cams[i]:
             if c in jpgcams:
+                command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-recon/{prj_name}/images/{r}/{c}/"
+            elif c in jpgcamscrop:
                 command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-recon/{prj_name}/images/{r}/{c}/"
             elif c in jpgcamsblur:
                 command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-prod/{prj_name}/images/{r}/{c[:-5]}/"
@@ -702,6 +705,47 @@ def generate_blurring_commands(output_dir, r):
     return 1
 
 
+def generate_cropping_commands(output_dir, r):
+    """
+    Generate Cropping commands for a recording
+    """
+    #! Get the seq from filtred_{rec}.txt file
+    filtered_filepath = f"{output_dir}/intermediate/filtered_{r}.txt"
+    if not Path(filtered_filepath).exists():
+        print(filtered_filepath, "doesn't exists") 
+        return 0
+    else:
+        seq = get_list_from_filtered_images_file(filtered_filepath)
+
+    #TODO Scan and prepare the list of cameras which has JPG images
+    cam_jpg = ['08', '09', '10', '11', '12', '13']
+
+    #! Open file to store the commands
+    output_filepath = f"{output_dir}/intermediate/cropping_{r}.txt"
+    f = open(output_filepath, "w")
+
+    #! For each camera with pgf images:
+    for c_jpg in cam_jpg:
+        for s in seq:
+            cmd = f"echo image.{s}.jpg;convert {output_dir}/images/{r}/{c_jpg}/image.{s}.jpg -crop 4096x3008+0+0 {output_dir}/images/{r}/{c_jpg}_crop/image.{s}.jpg"
+            f.write(cmd)
+            f.write('\n')
+
+    #! Close the file
+    f.close()
+
+    print(f"Generate Cropping commands completed for rec {r}")
+
+    return 1
+
+def generate_cropping_commands_all(output_dir, recs):
+    """
+    Generate cropping commands for all recordings
+    """
+    for r in recs:
+        generate_cropping_commands(output_dir, r)
+        
+        
 def generate_blurring_commands_all(output_dir, recs):
     """
     Generate Blurring commands for all recordings

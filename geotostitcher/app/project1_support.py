@@ -25,6 +25,7 @@
 #    Mar 01, 2024 12:14:24 PM +0545  platform: Linux
 #    Mar 21, 2024 07:32:26 PM +0545  platform: Linux
 #    Apr 19, 2024 02:08:58 PM +0545  platform: Linux
+#    Apr 30, 2024 10:05:02 PM +0545  platform: Linux
 
 import sys
 import time
@@ -583,7 +584,17 @@ def upload_quality_file(*args):
     print(f"-> Uploading {qfile} to {qtl_file}")
     au.s3_upload(qfile, qtl_file)
 
+def start_jpg_crop(*args):
+    print("Start JPG Cropping")
+    recordings = stitcher.recs
+    for rec in recordings:
+        stitcher.cropping(rec, 6)
 
+def upload_jpg_crop(*args):
+    print("Start Cropped JPG Upload")
+    recordings = stitcher.recs
+    for rec in recordings:
+        stitcher.upload_crop(rec, 6)
 
 if __name__ == '__main__':
     project1.start_up()
