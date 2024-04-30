@@ -588,7 +588,7 @@ def start_jpg_crop(*args):
     print("Start JPG Cropping")
     recordings = stitcher.recs
     for rec in recordings:
-        stitcher.cropping(rec, 6)
+        stitcher.cropping(rec, 200)
 
 def upload_jpg_crop(*args):
     print("Start Cropped JPG Upload")

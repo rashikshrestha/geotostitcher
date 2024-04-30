@@ -624,7 +624,7 @@ def generate_upload_commands(output_dir, r, prj_name):
             if c in jpgcams:
                 command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-recon/{prj_name}/images/{r}/{c}/"
             elif c in jpgcamscrop:
-                command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-recon/{prj_name}/images/{r}/{c}/"
+                command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-recon/{prj_name}/images/{r}/{c[:-5]}/"
             elif c in jpgcamsblur:
                 command = f"aws s3 sync {output_dir}/images/{r}/{c}/ s3://geoto-projects-prod/{prj_name}/images/{r}/{c[:-5]}/"
             else:
