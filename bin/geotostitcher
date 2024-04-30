@@ -3,3 +3,5 @@
 export GEOTOSTITCHER=/home/leon/rashik/geotostitcher
 export PYTHONPATH=$PYTHONPATH:$GEOTOSTITCHER
 python3 $GEOTOSTITCHER/geotostitcher/app/project1_support.py
+echo Exiting...
+sleep 2
