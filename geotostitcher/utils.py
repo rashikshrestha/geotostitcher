@@ -144,6 +144,13 @@ def build_output_dirs(rec_and_cams, output_dir):
     for r,cams in rec_and_cams.items():
         pts_dir = Path(output_dir+'/intermediate/pts/'+r)
         pts_dir.mkdir(parents=True, exist_ok=True)
+        
+    #! Build dirs for blur data
+    for r,cams in rec_and_cams.items():
+        cams_to_blur = ['08', '09', '10', '11', '12', '13']
+        for c in cams_to_blur:
+            pts_dir = Path(output_dir+'/intermediate/blur/'+r+'/'+c)
+            pts_dir.mkdir(parents=True, exist_ok=True)
 
 
 def verify_output_dirs(rec_and_cams, output_dir):
