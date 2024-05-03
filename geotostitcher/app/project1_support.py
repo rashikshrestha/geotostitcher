@@ -358,7 +358,7 @@ def select_s18g(*args):
 
 def select_s21(*args):
     print("Select s21")
-    stitcher.main_dir = f"/home/leon/rashik/s21/360_process"
+    stitcher.main_dir = f"/home/leon/rashik/s21d/360_process"
     print(f"Main dir: {stitcher.main_dir}")
 
 def close_select_prj(*args):
