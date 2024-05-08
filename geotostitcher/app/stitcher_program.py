@@ -1,5 +1,6 @@
 import geotostitcher.utils as utils
 from geotostitcher.executer import Executer
+from geotostitcher.recon_parser import generate_blur_files
 import subprocess
 import os
 import time
@@ -194,10 +195,11 @@ class Stitcher():
         print(f"Started Upload 360low for rec {rec}. Please Wait ...")
 
     def download_recon(self, rec, no_of_threads):
-        execution_file = utils.get_commands_file(self.output_dir, 'download_recon', rec)
-        self.exe.prepare_execution(execution_file, no_of_threads)
-        self.exe.start()
-        print(f"Started Download Recon for rec {rec}. Please Wait ...")
+        generate_blur_files(self.output_dir, rec)
+        # execution_file = utils.get_commands_file(self.output_dir, 'download_recon', rec)
+        # self.exe.prepare_execution(execution_file, no_of_threads)
+        # self.exe.start()
+        # print(f"Started Download Recon for rec {rec}. Please Wait ...")
 
     def blurring(self, rec, no_of_threads):
         execution_file = utils.get_commands_file(self.output_dir, 'blurring', rec)

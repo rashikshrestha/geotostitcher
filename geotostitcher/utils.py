@@ -700,7 +700,7 @@ def generate_blurring_commands(output_dir, r):
     #! For each camera with pgf images:
     for c_jpg in cam_jpg:
         for s in seq:
-            cmd = f"mv {output_dir}/images/{r}/{c_jpg}/image.{s}.jpg {output_dir}/images/{r}/{c_jpg}_blur/image.{s}.jpg"
+            cmd = f"python3 /home/leon/rashik/geotostitcher/geotostitcher/blurrer.py {output_dir}/images/{r}/{c_jpg}/image.{s}.jpg"
             f.write(cmd)
             f.write('\n')
 
