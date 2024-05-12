@@ -619,7 +619,7 @@ def generate_upload_commands(output_dir, r, prj_name):
     names = ['uploadpgf', 'uploadjpg', 'uploadjpgblur', 'uploadjpgcrop', 'upload360high', 'upload360low']
     all_cams = [pgfcams, jpgcams, jpgcamsblur, jpgcamscrop, highs, lows]
 
-    for i in range(4):
+    for i in range(len(names)):
         name = names[i]
         cam_list = all_cams[i]
         print(name, cam_list)
