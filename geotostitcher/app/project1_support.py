@@ -108,6 +108,12 @@ def start_preprocess(*args):
     stitcher.preprocess()
     # _w1.no_of_rec['text'] = len(stitcher.recs)
     # _w1.project_name['text'] = stitcher.project_name
+    
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│          Pre Process (Start) has been completed          │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 def start_process_jpg(*args):
     print('Processing JPG ...')
@@ -129,8 +135,12 @@ def start_process_jpg(*args):
             root.update_idletasks()
             root.update()
             time.sleep(0.05)
-    
-    print("Finish JPG")
+
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│          Process JPG (Start) has been completed          │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 def start_process_pgf(*args):
     print('Processing PGF ...')
@@ -153,7 +163,11 @@ def start_process_pgf(*args):
             root.update()
             time.sleep(0.05)
     
-    print("Finish PGF")
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│          Process PGF (Start) has been completed          │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 def start_stitch_360(*args):
     print('Unavailable Now')
@@ -301,6 +315,12 @@ def generate_pts(*args):
 
     for rec in recordings:
         stitcher.generate_pts(rec, template_path)
+        
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│     Stitch 360high (Generate PTS) has been completed     │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 def select_project(*args):
     print("Select Project")
@@ -399,7 +419,11 @@ def start_stitch_360low(*args):
             root.update()
             time.sleep(0.05)
     
-    print("Finish processing 360low")
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│        Generate Tiles (Start) has been completed         │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 def start_stitch_360high(*args):
     print('Stitching 360high ...')
@@ -417,6 +441,12 @@ def start_stitch_360high(*args):
             time.sleep(0.05)
 
         print(f"Completed stitching 360high for rec {rec}")
+
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│        Stitch 360high (Start) has been completed         │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 def count_avail_pgf_cams(avail_cams):
     total_pgf_cams = ['00', '01', '02', '03', '04', '05', '06', '07']
@@ -436,26 +466,32 @@ def upload_jpg(*args):
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.upload_jpg(rec, 6)
-
+        
 def upload_jpgblur(*args):
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.upload_jpgblur(rec, 6)
-
+        
 def upload_360high(*args):
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.upload_360high(rec, 1)
-
+        
 def upload_360low(*args):
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.upload_360low(rec, 1)
-
+        
 def download_recon(*args):
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.download_recon(rec, 1)
+
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│       Blurring (Download Recon) has been completed       │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 def start_blurring(*args):
     print('Blurring ...')
@@ -478,7 +514,11 @@ def start_blurring(*args):
             root.update()
             time.sleep(0.05)
     
-    print("Finish Blurring")
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│           Blurring (Start) has been completed            │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 import os
 
@@ -510,7 +550,11 @@ def upload_pts(*args):
     os.system(command2)
     os.system(command3)
 
-    print('Done uploading PTS!')
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│      Stitch 360high (Upload PTS) has been completed      │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 def select_template_big(*args):
     print('project1_support.select_template_big')
@@ -547,7 +591,11 @@ def generate_quality_file(*args):
     qfile = generate_quality(gps_trigger_data, cfile, pfile)
     stitcher.quality_file = qfile
 
-    
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│     Generate Quality File (Start) has been completed     │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
     
 
@@ -583,18 +631,36 @@ def upload_quality_file(*args):
     #! Upload Quality file
     print(f"-> Uploading {qfile} to {qtl_file}")
     au.s3_upload(qfile, qtl_file)
+    
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│    Generate Quality File (Upload) has been completed     │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 def start_jpg_crop(*args):
     print("Start JPG Cropping")
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.cropping(rec, 100)
+    
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│          Process JPG (Crop) has been completed          │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 def upload_jpg_crop(*args):
     print("Start Cropped JPG Upload")
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.upload_crop(rec, 6)
+        
+    print()
+    print("┌──────────────────────────────────────────────────────────┐") 
+    print("│       Process JPG (Upload Crop) has been completed       │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
 
 if __name__ == '__main__':
     project1.start_up()
