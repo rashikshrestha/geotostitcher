@@ -45,7 +45,11 @@ def tileit(image_path: str):
         else:
             top_pad_height = math.floor(pad_height)
             bottom_pad_height = math.ceil(pad_height)
-            
+          
+        # Explicitely cast to int 
+        top_pad_height = int(top_pad_height) 
+        bottom_pad_height = int(bottom_pad_height)
+
         pad_width = img_width
         
         top_pad = np.zeros((top_pad_height, pad_width,3))    
