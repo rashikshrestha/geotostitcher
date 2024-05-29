@@ -617,6 +617,8 @@ def upload_quality_file(*args):
 
     for pd in poses_dirs:
         splits = pd.split('__')
+        if len(splits) < 2:
+            continue
         if splits[2][:3] == rec:
             break
 
