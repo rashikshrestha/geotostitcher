@@ -44,7 +44,7 @@ def generate_blur_files(out_dir, rec):
     for br in tqdm(blur_regions):
         cam, pose, tlx, tly, brx, bry = br
         blur_region = [tlx, tly, brx, bry]
-        blur_file = Path(f"{csv_dir}/{cam:02d}/{pose}.pkl")
+        blur_file = Path(f"{csv_dir}/{int(cam):02d}/{pose}.pkl")
        
         if blur_file.exists():
             with open(blur_file, 'r+b') as f:
