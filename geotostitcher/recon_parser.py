@@ -45,12 +45,16 @@ def generate_blur_files(out_dir, rec):
         cam, pose, tlx, tly, brx, bry = br
         blur_region = [tlx, tly, brx, bry]
         blur_file = Path(f"{csv_dir}/{int(cam):02d}/{pose}.pkl")
-       
+        
         if blur_file.exists():
-            with open(blur_file, 'r+b') as f:
+            with open(blur_file, 'rb') as f:
                 all_blur_regions = pickle.load(f)
-                all_blur_regions.append(blur_region)
+                if blur_region not in all_blur_regions:
+                    all_blur_regions.append(blur_region)
+                    
+            with open(blur_file, 'wb') as f:
                 pickle.dump(all_blur_regions, f)
+                
         else:
             with open(blur_file, 'wb') as f:
                 all_blur_regions = [blur_region]
