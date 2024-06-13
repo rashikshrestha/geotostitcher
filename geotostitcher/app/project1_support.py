@@ -225,12 +225,11 @@ def add_proj_as_radio(holder, prj_all):
     prj_var = tk.StringVar()
 
     y = 0.03
-    x_start = 0
     for i in range(len(prj_all)):
 
         cb = tk.Radiobutton(holder)
 
-        cb.place(relx=0.018+(i//21)*0.7, rely=y+(i%21)*0.043, relheight=0.073, relwidth=0.7, bordermode='ignore')
+        cb.place(relx=0.018+(i//21)*0.4, rely=y+(i%21)*0.043, relheight=0.073, relwidth=0.7, bordermode='ignore')
         cb.configure(activebackground="beige")
         cb.configure(anchor='w')
         cb.configure(compound='left')
