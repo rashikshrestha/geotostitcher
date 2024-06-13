@@ -26,6 +26,7 @@
 #    Mar 21, 2024 07:32:26 PM +0545  platform: Linux
 #    Apr 19, 2024 02:08:58 PM +0545  platform: Linux
 #    Apr 30, 2024 10:05:02 PM +0545  platform: Linux
+#    Jun 13, 2024 10:23:18 PM +0545  platform: Linux
 
 import sys
 import time
@@ -663,6 +664,29 @@ def upload_jpg_crop(*args):
     print("│       Process JPG (Upload Crop) has been completed       │")
     print("└──────────────────────────────────────────────────────────┘")
     print()
+
+def start_bottom_process(*args):
+    print("Top Process Started")
+    start_process_pgf()
+    upload_pgf()
+    start_process_jpg()
+    start_jpg_crop()
+    upload_jpg_crop()
+    print("Top Process Ends")
+    
+
+def start_top_process(*args):
+    print("Bottom Process Started")
+    start_blurring()
+    upload_jpgblur()
+    generate_pts()
+    start_stitch_360high()
+    upload_pts()
+    start_stitch_360low()
+    upload_360low()
+    generate_quality_file()
+    upload_quality_file()
+    print("Bottom Process Ends")
 
 if __name__ == '__main__':
     project1.start_up()
