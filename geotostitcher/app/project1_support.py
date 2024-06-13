@@ -224,7 +224,7 @@ def add_proj_as_radio(holder, prj_all):
 
     prj_var = tk.StringVar()
 
-    y = 0.1
+    y = 0.05
     for i in range(len(prj_all)):
 
         cb = tk.Radiobutton(holder)
