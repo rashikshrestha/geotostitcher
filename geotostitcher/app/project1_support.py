@@ -34,6 +34,7 @@ import tkinter as tk
 from tkinter import filedialog
 import tkinter.ttk as ttk
 from tkinter.constants import *
+import traceback
 
 from stitcher_program import Stitcher
 import project1
@@ -563,83 +564,96 @@ def select_template_big(*args):
     file_path = filedialog.askopenfilename()
     _w1.pts_template_big.insert(0, file_path)
 
+
 def generate_quality_file(*args):
-    print('Generate Quality')
-    global stitcher
+    try:
+        print('\nGenerating Quality File:')
+        global stitcher
 
-    print(stitcher.main_dir)
-    print(stitcher.input_dir)
-    print(stitcher.output_dir)
-    print(stitcher.project_name)
-    rec = stitcher.recs[0]
-    print(rec)
+        # print(stitcher.main_dir)
+        # print(stitcher.input_dir)
+        # print(stitcher.output_dir)
+        # print(stitcher.project_name)
+        rec = stitcher.recs[0]
+        # print(rec)
 
-    gps_trigger_data = f"{stitcher.input_dir}/images/{rec}/gps_trigger_data.txt"
+        gps_trigger_data = f"{stitcher.input_dir}/images/{rec}/gps_trigger_data.txt"
 
-    if not Path(gps_trigger_data).exists():
-        print(f"gps_trigger_data not available. Cannot generate quality")
+        if not Path(gps_trigger_data).exists():
+            print(f"Error: GPS trigger data not available. Cannot generate quality!")
+            print(f"It is supposed to be here: {gps_trigger_data}")
+            return None
+        else:
+            print(f"Found GPS trigger data: {gps_trigger_data}")
+            
+        # Get poses files and closest files from posesfinal dir    
+        poses_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='.poses') 
+        closest_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='.closest') 
+
+        if len(poses_files) != len(closest_files):
+            print(f"Error: there aren't same number of poses files and closest files")
+            print("Cannot generate qulality file")
+            return None
+        
+        if len(poses_files) == 0:
+            print("Error: no poses files found")
+            print("Cannot generate quality file")
+            return None
+
+        if len(closest_files) == 0:
+            print("Error: no closest files found")
+            print("Cannot generate quality file")
+            return None
+
+        for pfile, cfile in zip(poses_files, closest_files):
+            qfile = generate_quality(gps_trigger_data, cfile, pfile)
+            
+    #! Ending Error handling        
+    except Exception:
+        utils.print_error([str(traceback.format_exc())])
         return None
-
-    pfile, cfile = utils.get_final_poses_and_closest_file_for_this_rec(stitcher.input_dir, rec)
-    if pfile is None or cfile is None:
-        print(f"Cannot generate quality file")
-        return None
-
-    print(gps_trigger_data)
-    print(pfile)
-    print(cfile)
-
-    qfile = generate_quality(gps_trigger_data, cfile, pfile)
-    stitcher.quality_file = qfile
-
-    print()
-    print("┌──────────────────────────────────────────────────────────┐") 
-    print("│     Generate Quality File (Start) has been completed     │")
-    print("└──────────────────────────────────────────────────────────┘")
-    print()
-
-    
+    utils.print_success(["Generated Quality File!"])
+        
 
 def upload_quality_file(*args):
-    global stitcher
-    print("Uploading quality...")
+    try:
+        global stitcher
+        print("\nUploading quality files:")
 
-    #! Get local qfile name
-    rec = stitcher.recs[0]
-    pfile, cfile = utils.get_final_poses_and_closest_file_for_this_rec(stitcher.input_dir, rec)
-    pfile_splits = pfile.split('/')
-    pfile_path, pfile_name = pfile_splits[:-1], pfile_splits[-1]
-    qfile_name = f"{rec}.qtl"
-    pfile_path.append(qfile_name)
-    qfile = '/'.join(pfile_path)
+        #! Get local qfile name
+        rec = stitcher.recs[0]
+        qtl_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='.qtl') 
+        
+        if len(qtl_files)==0:
+            utils.print_error(["Cannot find any .qtl files!"])
+            return None
 
-    #! Get s3 qfile name
-    poses_dirs = au.s3_ls(f"s3://geoto-projects-prod/{stitcher.project_name}/poses/")
-
-    for pd in poses_dirs:
-        splits = pd.split('__')
-        if len(splits) < 2:
-            continue
-        if splits[2][:3] == rec:
-            break
-
-    print(f"{pd} SELECTED")
-    
-    if splits[2][:3] != rec:
-        print("Couldn't find poses directory in s3, Upload not possible!")
+        for qfile in qtl_files:
+            qtl_file_dir = qfile.rsplit('/', 2)[1]
+            qtl_s3_dir = f"s3://geoto-projects-prod/{stitcher.project_name}/poses/{qtl_file_dir}"
+            
+            qtl_s3_dir_parent = Path(qtl_s3_dir).parent
+            parent_contents = au.s3_ls(str(qtl_s3_dir_parent))
+           
+            if qtl_s3_dir.rsplit('/')[-1] not in parent_contents:
+                utils.print_error([
+                    "Error: Couldn't find poses directory in s3, Upload not possible!",
+                    "Looks like you haven't Uploaded this poses to Amazon S3",
+                    f"I need to have: {qtl_s3_dir}",
+                    "Upload Aborted!"
+                ])
+                return None
+            
+            qtl_s3_file = f"{qtl_s3_dir}/{rec}.qtl" 
+            print(f"-> Uploading {qfile} to {qtl_s3_file}")
+            au.s3_upload(qfile, qtl_s3_file)
+            
+    #! Ending Error handling        
+    except Exception:
+        utils.print_error([str(traceback.format_exc())])
         return None
-
-    qtl_file = f"s3://geoto-projects-prod/{stitcher.project_name}/poses/{pd}/{rec}.qtl" 
-
-    #! Upload Quality file
-    print(f"-> Uploading {qfile} to {qtl_file}")
-    au.s3_upload(qfile, qtl_file)
-    
-    print()
-    print("┌──────────────────────────────────────────────────────────┐") 
-    print("│    Generate Quality File (Upload) has been completed     │")
-    print("└──────────────────────────────────────────────────────────┘")
-    print()
+    utils.print_success(["Uploaded Quality Files!"]) 
+        
 
 def start_jpg_crop(*args):
     print("Start JPG Cropping")
