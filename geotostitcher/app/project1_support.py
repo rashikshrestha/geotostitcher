@@ -580,8 +580,10 @@ def generate_quality_file(*args):
         gps_trigger_data = f"{stitcher.input_dir}/images/{rec}/gps_trigger_data.txt"
 
         if not Path(gps_trigger_data).exists():
-            print(f"Error: GPS trigger data not available. Cannot generate quality!")
-            print(f"It is supposed to be here: {gps_trigger_data}")
+            utils.print_error([
+                f"Error: GPS trigger data not available. Cannot generate quality!",
+                f"It is supposed to be here: {gps_trigger_data}"
+            ])
             return None
         else:
             print(f"Found GPS trigger data: {gps_trigger_data}")
@@ -591,24 +593,33 @@ def generate_quality_file(*args):
         closest_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='.filtered.closest') 
 
         if len(poses_files) != len(closest_files):
-            print(f"Error: there aren't same number of poses files and closest files")
-            print("Cannot generate qulality file")
+            utils.print_error([
+                f"Error: there aren't same number of poses files and closest files",
+                "Cannot generate qulality file" 
+            ])
             return None
         
         if len(poses_files) == 0:
-            print("Error: no poses files found")
-            print("Cannot generate quality file")
+            utils.print_error([
+                "Error: no poses files found",
+                "Cannot generate quality file"
+            ])
             return None
 
         if len(closest_files) == 0:
-            print("Error: no closest files found")
-            print("Cannot generate quality file")
+            utils.print_error([
+                "Error: no closest files found",
+                "Cannot generate quality file"
+            ])
             return None
 
         for pfile, cfile in zip(poses_files, closest_files):
             if Path(pfile).parent != Path(cfile).parent:
-                print("Error: pfile and cfile are in different directory")
-                print("Cannot generate quality file")
+                utils.print_error([
+                    "Error: pfile and cfile are in different directory",
+                    "Cannot generate quality file"
+                ])
+                
                 return None
             qfile = generate_quality(gps_trigger_data, cfile, pfile)
             

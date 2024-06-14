@@ -279,12 +279,18 @@ def search_files_for_this_rec(input_dir, rec, search_dir='poses', extension='.po
             print(f"Error: Multiple files found inside {poses_path}")
             first_poses_file = poses_files[0]
             print(f"But I am using the first one: {first_poses_file}")
+            selected_poses_files.append(f"{poses_path}/{first_poses_file}")
         elif len(poses_files) == 1:
             first_poses_file = poses_files[0]
+            selected_poses_files.append(f"{poses_path}/{first_poses_file}")
         elif len(poses_files) == 0:
             print(f"Error: No *{extension} file found inside {poses_path}. Ignoring this dir!")
 
-        selected_poses_files.append(f"{poses_path}/{first_poses_file}")
+        
+    if len(selected_poses_files) == 0:
+        print_error([f"No '*{extension}' file found inside '{search_dir}' directory.",
+                     f"Are you sure you've kept '*{extension}' files inside '{search_dir}' directory for recording '{rec}' ??"])
+        return []
        
     selected_poses_files_that_exists = [] 
     for spf in selected_poses_files:
