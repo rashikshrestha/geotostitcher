@@ -2,6 +2,30 @@ import os
 from os.path import exists
 from pathlib import Path
 from tqdm import tqdm
+from boxprint import bprint, BoxTypes
+from colors import color
+
+def print_error(errors: list):
+    errors = '\n'.join(errors)
+    print('\n')
+    bprint(errors,
+           title=f"ERROR",
+           width=190,
+           box_type=BoxTypes.ROUND,
+           stroke_func=lambda text: color(text, fg="red")
+           )
+
+ 
+def print_success(message: list):
+    message = '\n'.join(message)
+    print('\n')
+    bprint(message,
+           title=f"SUCCESS",
+           width=190,
+           box_type=BoxTypes.ROUND,
+           stroke_func=lambda text: color(text, fg="green")
+           )
+
 
 def get_project_name_from_input_dir(input_dir):
     """
@@ -205,9 +229,11 @@ def verify_output_dirs(rec_and_cams, output_dir):
     return success
 
 
-def get_poses_file_path_for_this_rec(input_dir, rec):
+def search_files_for_this_rec(input_dir, rec, search_dir='poses', extension='.poses'):
     """
-    Get the path to poses file for this recording
+    Search files for a specific recording.
+    If finds all the file of this format:
+           {input_dir}/{search_dir}/anything__poses__{rec}anything/{*.extension}
 
     Parameters
     ----------
@@ -215,34 +241,64 @@ def get_poses_file_path_for_this_rec(input_dir, rec):
         Path to input directory
     rec: str
         Name of recording
+    search_dir: str
+    extension: str
 
     Returns
     -------
-    poses_file_path: str
-        Path of the poses file
+    files: list[str]
+        Selected files
     """
     project_name = get_project_name_from_input_dir(input_dir)
-    poses_dirs = os.listdir(f"{input_dir}/poses") 
+    poses_dirs = os.listdir(f"{input_dir}/{search_dir}") 
 
+    selected_poses_dirs = []
     for pd in poses_dirs:
-        if pd.startswith(f"{project_name}__poses__{rec}"):
-            break
-
-    splits = pd.split('__')
-    if splits[2][:3] != rec:
+        splits = pd.split('__')[2]
+        if splits.startswith(f"{rec}"):
+            selected_poses_dirs.append(pd)
+       
+    if len(selected_poses_dirs)==0:
         print("Couldn't find poses directory!")
         return None
-
-    poses_file_name = f"{splits[0]}_{splits[-1]}.poses"
-    poses_file_path = f"{input_dir}/poses/{pd}/{poses_file_name}"
-
-    if Path(poses_file_path).exists():
-        return poses_file_path
+       
+    selected_poses_files = [] 
+    for spd in selected_poses_dirs:
+        poses_path = f"{input_dir}/{search_dir}/{spd}"
+        files = os.listdir(poses_path)
+        poses_files = []
+        for fi in files:
+            if fi.endswith(extension):
+                poses_files.append(fi)
+        if len(poses_files)>1:
+            print(f"Error: Multiple files found inside {poses_path}")
+            first_poses_file = poses_files[0]
+            print(f"But I am using the first one: {first_poses_file}")
+        elif len(poses_files) == 1:
+            first_poses_file = poses_files[0]
+        elif len(poses_files) == 0:
+            print(f"Error: No *{extension} file found inside {poses_path}. Ignoring this dir!")
+        selected_poses_files.append(f"{poses_path}/{first_poses_file}")
+       
+    selected_poses_files_that_exists = [] 
+    for spf in selected_poses_files:
+        if Path(spf).exists():
+            selected_poses_files_that_exists.append(spf)
+        else:
+            f"{spf} was selected but this file doesn't exist. So ignoring."
+            
+    print(f"\nUsing these {extension} files:") 
+    for spfte in selected_poses_files_that_exists:
+        print('  ->',spfte)
+        
+    if len(selected_poses_files_that_exists)>0:
+        return selected_poses_files_that_exists
     else:
-        print(f"Poses file unavailable for recording {rec}")
+        print(f"No {extension} file found for rec {rec}. Returning None!!")
         return None
+    
 
-
+  
 def get_final_poses_and_closest_file_for_this_rec(input_dir, rec):
     """
     Get the path to poses file for this recording
@@ -334,9 +390,13 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
     output_filename = f"{output_dir}/intermediate/filtered_{rec}.txt"
     f = open(output_filename, "w")
 
-    poses_file = get_poses_file_path_for_this_rec(input_dir, rec)
-    img_seq_from_poses = get_image_seq_from_poses_file(poses_file)
-    # print(img_seq_from_poses)
+    poses_files = search_files_for_this_rec(input_dir, rec, 'poses', '.poses')
+   
+    img_seq_from_poses = [] 
+    for pf in poses_files:
+        img_seq_from_poses += get_image_seq_from_poses_file(pf)
+    
+    print(f"{len(img_seq_from_poses)} seq available in poses file.")
 
     #TODO Here I have set the camera names explicitely
     #TODO But the number/names of cameras might vary in future!
@@ -346,16 +406,27 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
     top_cams = ['00','01','02','03','04','05','06','07']
     bottom_cams = ['08', '09', '10', '11', '12', '13']
 
-    unav_cams = []
+    unav_cams = [] # Unavailable top cams
     for tc in top_cams:
         if not os.path.isdir(f"{input_dir}/images/{rec}/{tc}"):
             unav_cams.append(tc)
 
     for uc in unav_cams:
         top_cams.remove(uc)
+        
+    unav_cams = [] # Unavailable bottomcams
+    for tc in bottom_cams:
+        if not os.path.isdir(f"{input_dir}/images/{rec}/{tc}"):
+            unav_cams.append(tc)
 
-    print(f"{len(img_seq_from_poses)} seq available in poses file.")
-    #! Check if the file correspondig to given seq number exists in the expected directories:
+    for uc in unav_cams:
+        bottom_cams.remove(uc)
+    
+    print("\nAvailable cams:") 
+    print(f"  -> Top PGF cams: {top_cams}")
+    print(f"  -> Bottom JPG cams: {bottom_cams}")
+
+    print("\nFiltering the poses that are common to all the available Cam directories and the poses file:")
     good_seq_count = 0
     for seq in tqdm(img_seq_from_poses):
         seq_good = True
@@ -382,8 +453,9 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
             f.write('\n')
 
     f.close()
-    print(f"Among which, {good_seq_count} are good ones!")
-    print(f"Filter Images completed for rec {rec}")
+    
+    print(f"{good_seq_count} poses are good ones!")
+    print(f"Filter Poses completed for rec {rec}")
 
 
 def generate_filtered_images_list_forall(input_dir, output_dir, r_and_c):
