@@ -5,6 +5,8 @@ from tqdm import tqdm
 from boxprint import bprint, BoxTypes
 from colors import color
 
+from .filter_poses import filter_poses_file
+
 def print_error(errors: list):
     errors = '\n'.join(errors)
     print('\n')
@@ -267,9 +269,12 @@ def search_files_for_this_rec(input_dir, rec, search_dir='poses', extension='.po
         poses_path = f"{input_dir}/{search_dir}/{spd}"
         files = os.listdir(poses_path)
         poses_files = []
+        
         for fi in files:
             if fi.endswith(extension):
-                poses_files.append(fi)
+                if not fi.endswith('.filtered'+extension): # dont take .filtered.poses type files
+                    poses_files.append(fi)
+                
         if len(poses_files)>1:
             print(f"Error: Multiple files found inside {poses_path}")
             first_poses_file = poses_files[0]
@@ -278,6 +283,7 @@ def search_files_for_this_rec(input_dir, rec, search_dir='poses', extension='.po
             first_poses_file = poses_files[0]
         elif len(poses_files) == 0:
             print(f"Error: No *{extension} file found inside {poses_path}. Ignoring this dir!")
+
         selected_poses_files.append(f"{poses_path}/{first_poses_file}")
        
     selected_poses_files_that_exists = [] 
@@ -391,6 +397,12 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
     f = open(output_filename, "w")
 
     poses_files = search_files_for_this_rec(input_dir, rec, 'poses', '.poses')
+    closest_files = search_files_for_this_rec(input_dir, rec, 'poses', '.closest')
+    
+    for pf,cf in zip(poses_files, closest_files): 
+        filter_poses_file(pf, cf, 150, 200)
+
+    poses_files = search_files_for_this_rec(input_dir, rec, 'poses', '.filtered.poses')
    
     img_seq_from_poses = [] 
     for pf in poses_files:

@@ -587,8 +587,8 @@ def generate_quality_file(*args):
             print(f"Found GPS trigger data: {gps_trigger_data}")
             
         # Get poses files and closest files from posesfinal dir    
-        poses_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='.poses') 
-        closest_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='.closest') 
+        poses_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='.filtered.poses') 
+        closest_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='.filtered.closest') 
 
         if len(poses_files) != len(closest_files):
             print(f"Error: there aren't same number of poses files and closest files")
@@ -606,6 +606,10 @@ def generate_quality_file(*args):
             return None
 
         for pfile, cfile in zip(poses_files, closest_files):
+            if Path(pfile).parent != Path(cfile).parent:
+                print("Error: pfile and cfile are in different directory")
+                print("Cannot generate quality file")
+                return None
             qfile = generate_quality(gps_trigger_data, cfile, pfile)
             
     #! Ending Error handling        
