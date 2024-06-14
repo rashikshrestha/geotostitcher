@@ -8,6 +8,8 @@ def s3_ls(path, full_path=False):
     """
     List the files of the dir
     """
+    if path.startswith('s3:/'):
+        path = path[4:]
     files = s3_fs.ls(path)
 
     if full_path:
