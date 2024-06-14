@@ -88,8 +88,8 @@ def get_qualities_from_closest_file(closest_file):
     return poses_int, qualites_int
 
 def generate_quality_file(pfile, timestamps, pose_count, qualities):
-    print("Generating Quality File")
-    print(np.min(pose_count), np.max(pose_count))
+    print("\nGenerating .qtl file:")
+    # print(np.min(pose_count), np.max(pose_count))
     timestamps_filter = timestamps[pose_count]
 
     with open(pfile) as pf:
