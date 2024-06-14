@@ -23,12 +23,13 @@ def blur_multiple_squares(image, regions):
     """
     blurred_image = image.copy()
 
+
     for region in regions:
         try:
-            top_left_x = region[0]
-            top_left_y = region[1]
-            bottom_right_x = region[2]
-            bottom_right_y = region[3]
+            top_left_x = int(region[0])
+            top_left_y = int(region[1])
+            bottom_right_x = int(region[2])
+            bottom_right_y = int(region[3])
 
             square = blurred_image[top_left_y:bottom_right_y, top_left_x:bottom_right_x]
             blurred_square = cv2.blur(square, (128,128))
