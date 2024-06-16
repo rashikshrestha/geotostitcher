@@ -694,7 +694,7 @@ def upload_jpg_crop(*args):
     print("└──────────────────────────────────────────────────────────┘")
     print()
 
-def start_bottom_process(*args):
+def start_top_process(*args):
     print("Top Process Started")
     start_process_pgf()
     upload_pgf()
@@ -704,7 +704,7 @@ def start_bottom_process(*args):
     print("Top Process Ends")
     
 
-def start_top_process(*args):
+def start_bottom_process(*args):
     print("Bottom Process Started")
     start_blurring()
     upload_jpgblur()
