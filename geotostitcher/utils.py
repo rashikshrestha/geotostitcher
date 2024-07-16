@@ -272,7 +272,7 @@ def search_files_for_this_rec(input_dir, rec, search_dir='poses', extension='.po
         
         for fi in files:
             if fi.endswith(extension):
-                if not fi.endswith('.filtered'+extension): # dont take .filtered.poses type files
+                if not fi.endswith('filtered'+extension): # dont take 'filtered.poses' type files
                     poses_files.append(fi)
                 
         if len(poses_files)>1:
@@ -408,7 +408,7 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
     for pf,cf in zip(poses_files, closest_files): 
         filter_poses_file(pf, cf, 150, 200)
 
-    poses_files = search_files_for_this_rec(input_dir, rec, 'poses', '.filtered.poses')
+    poses_files = search_files_for_this_rec(input_dir, rec, 'poses', 'filtered.poses')
    
     img_seq_from_poses = [] 
     for pf in poses_files:

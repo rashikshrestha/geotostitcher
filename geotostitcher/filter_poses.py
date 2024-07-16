@@ -222,10 +222,10 @@ def filter_poses_file(poses_file: Path, closest_file: Path, min_dist: float = 15
     print(f"Filtered no of poses: {len(poses)}") 
     
     #! Saving
-    filter_poses_file_path = str(poses_file).rsplit('.',1)[0]+'.filtered.poses'
+    filter_poses_file_path = str(poses_file).rsplit('.',1)[0]+'filtered.poses'
     save_poses_file(poses, filter_poses_file_path)
 
-    filter_cposes_file_path = str(closest_file).rsplit('.',1)[0]+'.filtered.closest'
+    filter_cposes_file_path = str(closest_file).rsplit('.',1)[0]+'filtered.closest'
     save_closest_file(cposes, cdata[0], filter_cposes_file_path)
             
 

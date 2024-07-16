@@ -589,8 +589,8 @@ def generate_quality_file(*args):
             print(f"Found GPS trigger data: {gps_trigger_data}")
             
         # Get poses files and closest files from posesfinal dir    
-        poses_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='.filtered.poses') 
-        closest_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='.filtered.closest') 
+        poses_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='filtered.poses') 
+        closest_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='filtered.closest') 
 
         if len(poses_files) != len(closest_files):
             utils.print_error([
