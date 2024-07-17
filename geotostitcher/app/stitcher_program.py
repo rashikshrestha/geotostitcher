@@ -164,37 +164,62 @@ class Stitcher():
         else:
             return False
 
-
+    #! ------------- Uploading -------------
     def upload_pgf(self, rec, no_of_threads):
         execution_file = utils.get_commands_file(self.output_dir, 'uploadpgf', rec)
-        self.exe.prepare_execution(execution_file, no_of_threads)
-        self.exe.start()
-        print(f"Started Upload PGF cams for rec {rec}. Please Wait ...")
+        command = f"python3 /home/leon/rashik/geotostitcher/geotostitcher/uploader.py {execution_file}"
+        title = f"\"Uploading PGF for rec {rec}\""
+        subprocess.call(["gnome-terminal", "-t", title,"--", "sh", "-c",command])
+        # self.exe.prepare_execution(execution_file, no_of_threads)
+        # self.exe.start()
+        print(f"Started Upload PGF cams for rec {rec} in another terminal.")
 
     def upload_jpg(self, rec, no_of_threads):
         execution_file = utils.get_commands_file(self.output_dir, 'uploadjpg', rec)
-        self.exe.prepare_execution(execution_file, no_of_threads)
-        self.exe.start()
-        print(f"Started Upload JPG cams for rec {rec}. Please Wait ...")
+        command = f"python3 /home/leon/rashik/geotostitcher/geotostitcher/uploader.py {execution_file}"
+        title = f"\"Uploading JPG for rec {rec}\""
+        subprocess.call(["gnome-terminal", "-t", title,"--", "sh", "-c",command])
+        # self.exe.prepare_execution(execution_file, no_of_threads)
+        # self.exe.start()
+        print(f"Started Upload JPG cams for rec {rec} in another terminal.")
 
     def upload_jpgblur(self, rec, no_of_threads):
         execution_file = utils.get_commands_file(self.output_dir, 'uploadjpgblur', rec)
-        self.exe.prepare_execution(execution_file, no_of_threads)
-        self.exe.start()
-        print(f"Started Upload JPG Blur cams for rec {rec}. Please Wait ...")
+        command = f"python3 /home/leon/rashik/geotostitcher/geotostitcher/uploader.py {execution_file}"
+        title = f"\"Uploading JPG Blur for rec {rec}\""
+        subprocess.call(["gnome-terminal", "-t", title,"--", "sh", "-c",command])
+        # self.exe.prepare_execution(execution_file, no_of_threads)
+        # self.exe.start()
+        print(f"Started Upload JPG Blur cams for rec {rec} in another terminal.")
 
     def upload_360high(self, rec, no_of_threads):
         execution_file = utils.get_commands_file(self.output_dir, 'upload360high', rec)
-        self.exe.prepare_execution(execution_file, no_of_threads)
-        self.exe.start()
-        print(f"Started Upload 360high for rec {rec}. Please Wait ...")
+        command = f"python3 /home/leon/rashik/geotostitcher/geotostitcher/uploader.py {execution_file}"
+        title = f"\"Uploading 360 high for rec {rec}\""
+        subprocess.call(["gnome-terminal", "-t", title,"--", "sh", "-c",command])
+        # self.exe.prepare_execution(execution_file, no_of_threads)
+        # self.exe.start()
+        print(f"Started Upload 360high for rec {rec} in another terminal.")
 
     def upload_360low(self, rec, no_of_threads):
         execution_file = utils.get_commands_file(self.output_dir, 'upload360low', rec)
-        self.exe.prepare_execution(execution_file, no_of_threads)
-        self.exe.start()
-        print(f"Started Upload 360low for rec {rec}. Please Wait ...")
-
+        command = f"python3 /home/leon/rashik/geotostitcher/geotostitcher/uploader.py {execution_file}"
+        title = f"\"Uploading 360tiles for rec {rec}\""
+        subprocess.call(["gnome-terminal", "-t", title,"--", "sh", "-c",command])
+        # self.exe.prepare_execution(execution_file, no_of_threads)
+        # self.exe.start()
+        print(f"Started Upload 360tiles for rec {rec} in another terminal.")
+        
+    def upload_crop(self, rec, no_of_threads):
+        execution_file = utils.get_commands_file(self.output_dir, 'uploadjpgcrop', rec)
+        command = f"python3 /home/leon/rashik/geotostitcher/geotostitcher/uploader.py {execution_file}"
+        title = f"\"Uploading JPG Crop for rec {rec}\""
+        subprocess.call(["gnome-terminal", "-t", title,"--", "sh", "-c",command])
+        # self.exe.prepare_execution(execution_file, no_of_threads)
+        # self.exe.start()
+        print(f"Started Upload JPG Crop for rec {rec} in another terminal.")
+    #! ---------------------------------
+        
     def download_recon(self, rec, no_of_threads):
         generate_blur_files(self.output_dir, rec)
         # execution_file = utils.get_commands_file(self.output_dir, 'download_recon', rec)
@@ -213,9 +238,3 @@ class Stitcher():
         self.exe.prepare_execution(execution_file, no_of_threads)
         self.exe.start()
         print(f"Started Cropping for rec {rec}. Please Wait ...")
-    
-    def upload_crop(self, rec, no_of_threads):
-        execution_file = utils.get_commands_file(self.output_dir, 'uploadjpgcrop', rec)
-        self.exe.prepare_execution(execution_file, no_of_threads)
-        self.exe.start()
-        print(f"Started Upload JPG Crop for rec {rec}. Please Wait ...")
