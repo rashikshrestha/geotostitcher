@@ -2,6 +2,7 @@ from pathlib import Path
 from boxprint import bprint, BoxTypes
 from colors import *
 import numpy as np
+import os
 # import matplotlib.pyplot as plt
 
 
@@ -221,13 +222,26 @@ def filter_poses_file(poses_file: Path, closest_file: Path, min_dist: float = 15
     
     print(f"Filtered no of poses: {len(poses)}") 
     
-    #! Saving
-    filter_poses_file_path = str(poses_file).rsplit('.',1)[0]+'filtered.poses'
-    save_poses_file(poses, filter_poses_file_path)
-
-    filter_cposes_file_path = str(closest_file).rsplit('.',1)[0]+'filtered.closest'
-    save_closest_file(cposes, cdata[0], filter_cposes_file_path)
-            
+    #! Saving and renaming
+    
+    # If filtered.poses was generated before:
+    if str(poses_file).endswith('filtered.poses'):
+        save_poses_file(poses, str(poses_file))
+    else: # if this is first time generating filtered.poses  
+        filter_poses_file_path = str(poses_file).rsplit('.',1)[0]+'filtered.poses'
+        save_poses_file(poses, filter_poses_file_path)
+        poses_file_newname = str(poses_file).rsplit('.',1)[0]+'.orgposes'
+        os.rename(poses_file, poses_file_newname)
+       
+    # If fileterd.closes was generated before: 
+    if str(closest_file).endswith('filtered.closest'):
+        save_closest_file(cposes, cdata[0], str(closest_file))
+    else: # if the is first time generating filtered.closest
+        filter_cposes_file_path = str(closest_file).rsplit('.',1)[0]+'filtered.closest'
+        save_closest_file(cposes, cdata[0], filter_cposes_file_path)
+        closest_file_newname = str(closest_file).rsplit('.',1)[0]+'.orgclosest'
+        os.rename(closest_file, closest_file_newname)
+    
 
 if __name__ == '__main__':
     filter_poses_file('terrebone.poses', 1500, 200)
