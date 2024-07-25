@@ -272,8 +272,9 @@ def search_files_for_this_rec(input_dir, rec, search_dir='poses', extension='.po
         
         for fi in files:
             if fi.endswith(extension):
-                if not fi.endswith('filtered'+extension): # dont take 'filtered.poses' type files
-                    poses_files.append(fi)
+                #! removing this filter assuming that all the original .poses will be renamed to .orgposes
+                # if not fi.endswith('filtered'+extension): # dont take 'filtered.poses' type files
+                poses_files.append(fi)
                 
         if len(poses_files)>1:
             print(f"Error: Multiple files found inside {poses_path}")
@@ -402,12 +403,26 @@ def generate_filtered_images_list(input_dir, output_dir, rec, cams):
     output_filename = f"{output_dir}/intermediate/filtered_{rec}.txt"
     f = open(output_filename, "w")
 
+    #! Filter poses by distance
     poses_files = search_files_for_this_rec(input_dir, rec, 'poses', '.poses')
     closest_files = search_files_for_this_rec(input_dir, rec, 'poses', '.closest')
+   
     
     for pf,cf in zip(poses_files, closest_files): 
         filter_poses_file(pf, cf, 150, 200)
-
+       
+    #! Upload poses dir 
+    for pf in poses_files: 
+        pf_dir = Path(pf).parent
+        splits = str(pf_dir).rsplit('/',3)[1:]
+        pose_unique_path = '/'.join(splits)
+        aws_path = f"s3://geoto-projects-recon/{pose_unique_path}"
+        pose_dir_upload_command = f"aws s3 sync {pf_dir} {aws_path}"
+        print(f"Uploading to Recon: {pf_dir}") 
+        os.system(pose_dir_upload_command)
+        print("Done")
+        
+    #! Filter poses common to images in all the camers
     poses_files = search_files_for_this_rec(input_dir, rec, 'poses', 'filtered.poses')
    
     img_seq_from_poses = [] 
