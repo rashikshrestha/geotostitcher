@@ -679,11 +679,16 @@ def upload_quality_file(*args):
         
 
 def start_jpg_crop(*args):
-    print("Start JPG Cropping")
+    print("Start JPG Cropping...")
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.cropping(rec, 100)
-    
+        
+        done = False
+        while not done:
+            percent, count, done = stitcher.exe.get_progress()
+            time.sleep(0.05)
+        
     print()
     print("┌──────────────────────────────────────────────────────────┐") 
     print("│          Process JPG (Crop) has been completed          │")
