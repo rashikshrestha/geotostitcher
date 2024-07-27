@@ -458,32 +458,46 @@ def count_avail_pgf_cams(avail_cams):
             count += 1
     return count
 
+#! ---------- Upload Functions ----------
+
 def upload_pgf(*args):
     recordings = stitcher.recs
     for rec in recordings:
         no_of_cams = count_avail_pgf_cams(stitcher.r_and_c[rec])
         stitcher.upload_pgf(rec, no_of_cams)
+    utils.print_info(["Upload PGF started in another terminal"]) 
 
 def upload_jpg(*args):
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.upload_jpg(rec, 6)
+    utils.print_info(["Upload JPG started in another terminal"]) 
         
 def upload_jpgblur(*args):
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.upload_jpgblur(rec, 6)
+    utils.print_info(["Upload JPG Blur started in another terminal"]) 
         
 def upload_360high(*args):
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.upload_360high(rec, 1)
+    utils.print_info(["Upload 360 high started in another terminal"]) 
         
 def upload_360low(*args):
     recordings = stitcher.recs
     for rec in recordings:
         stitcher.upload_360low(rec, 1)
+    utils.print_info(["Upload 360 tiles started in another terminal"]) 
         
+def upload_jpg_crop(*args):
+    print("Start Cropped JPG Upload")
+    recordings = stitcher.recs
+    for rec in recordings:
+        stitcher.upload_crop(rec, 6)
+    utils.print_info(["Upload JPG Crop started in another terminal"]) 
+    
 def download_recon(*args):
     recordings = stitcher.recs
     for rec in recordings:
@@ -688,24 +702,16 @@ def start_jpg_crop(*args):
         while not done:
             percent, count, done = stitcher.exe.get_progress()
             time.sleep(0.05)
-        
+
     print()
     print("┌──────────────────────────────────────────────────────────┐") 
     print("│          Process JPG (Crop) has been completed          │")
     print("└──────────────────────────────────────────────────────────┘")
     print()
 
-def upload_jpg_crop(*args):
-    print("Start Cropped JPG Upload")
-    recordings = stitcher.recs
-    for rec in recordings:
-        stitcher.upload_crop(rec, 6)
-        
-    print()
-    print("┌──────────────────────────────────────────────────────────┐") 
-    print("│       Process JPG (Upload Crop) has been completed       │")
-    print("└──────────────────────────────────────────────────────────┘")
-    print()
+
+
+
 
 def start_top_process(*args):
     print("Top Process Started")
