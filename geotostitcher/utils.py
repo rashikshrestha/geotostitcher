@@ -291,7 +291,7 @@ def search_files_for_this_rec(input_dir, rec, search_dir='poses', extension='.po
     if len(selected_poses_files) == 0:
         print_error([f"No '*{extension}' file found inside '{search_dir}' directory.",
                      f"Are you sure you've kept '*{extension}' files inside '{search_dir}' directory for recording '{rec}' ??"])
-        return []
+        return None
        
     selected_poses_files_that_exists = [] 
     for spf in selected_poses_files:
