@@ -591,28 +591,32 @@ def generate_quality_file(*args):
         # Get poses files and closest files from posesfinal dir    
         poses_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='filtered.poses') 
         closest_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='filtered.closest') 
-
-        if len(poses_files) != len(closest_files):
-            utils.print_error([
-                f"Error: there aren't same number of poses files and closest files",
-                "Cannot generate qulality file" 
-            ])
-            return None
         
-        if len(poses_files) == 0:
+        if poses_files is None or closest_files is None:
+            utils.print_info(["Cannot find poses in posesfinal, trying initial poses directory"])
+            poses_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='poses', extension='filtered.poses') 
+            closest_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='poses', extension='filtered.closest') 
+
+        if poses_files is None:
             utils.print_error([
                 "Error: no poses files found",
                 "Cannot generate quality file"
             ])
             return None
 
-        if len(closest_files) == 0:
+        if closest_files is None:
             utils.print_error([
                 "Error: no closest files found",
                 "Cannot generate quality file"
             ])
             return None
-
+        
+        if len(poses_files) != len(closest_files):
+            utils.print_error([
+                f"Error: there aren't same number of poses files and closest files",
+                "Cannot generate qulality file" 
+            ])
+            return None
         for pfile, cfile in zip(poses_files, closest_files):
             if Path(pfile).parent != Path(cfile).parent:
                 utils.print_error([
@@ -639,7 +643,11 @@ def upload_quality_file(*args):
         rec = stitcher.recs[0]
         qtl_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='posesfinal', extension='.qtl') 
         
-        if len(qtl_files)==0:
+        if qtl_files is None:
+            utils.print_info(["Cannot find qtl in posesfinal, trying initial poses directory"])
+            qtl_files = utils.search_files_for_this_rec(stitcher.input_dir, rec, search_dir='poses', extension='.qtl') 
+        
+        if qtl_files is None:
             utils.print_error(["Cannot find any .qtl files!"])
             return None
 
