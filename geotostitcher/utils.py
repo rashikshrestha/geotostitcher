@@ -27,6 +27,16 @@ def print_success(message: list):
            box_type=BoxTypes.ROUND,
            stroke_func=lambda text: color(text, fg="green")
            )
+    
+def print_info(message: list):
+    message = '\n'.join(message)
+    print('\n')
+    bprint(message,
+           title=f"INFO",
+           width=190,
+           box_type=BoxTypes.ROUND,
+           stroke_func=lambda text: color(text, fg="blue")
+           )
 
 
 def get_project_name_from_input_dir(input_dir):
